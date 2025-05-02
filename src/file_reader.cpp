@@ -25,41 +25,47 @@ void FileReader::close() {
 
 void FileReader::process_ratings(RatingDatabase& db) {
     string line;
-    int current_index = 0;
+    
+    // Pular cabeçalho
+    if (!getline(file, line)) {
+        cerr << "Arquivo vazio ou erro na leitura" << endl;
+        return;
+    }
 
-    // pula primeira linha
-    getline(file, line);
-
-    while(getline(file, line)) {
+    while (getline(file, line)) {
         istringstream ss(line);
-        std::string token;
+        string token;
+        vector<string> tokens;
         
-        MovieRating rating_data;
-        int userId;
+        // Separar todos os tokens primeiro
+        while (getline(ss, token, ',')) {
+            tokens.push_back(token);
+        }
 
-        while(getline(ss, token, ',')){
-            switch(current_index) {
-                case 0:
-                    userId = stoi(token);
-                    cout << "user id: " << userId << endl;
-                    break;
-                case 1:
-                    rating_data.movieId = stoi(token);
-                    cout << "movie id: " << rating_data.movieId << endl;
-                    break;
-                case 2:
-                    rating_data.rating = stod(token);
-                    cout << "rating: " << rating_data.rating << endl;
-                    break;
-            }
+        // Verificar se temos todos os campos necessários
+        if (tokens.size() < 3) {
+            cerr << "Linha incompleta: " << line << endl;
+            continue;
+        }
 
-            if (current_index == 2) {
-            current_index = 0;
-            } 
-                current_index++;
-
+        try {
+            int userId = stoi(tokens[0]);
+            MovieRating rating_data;
+            rating_data.movieId = stoi(tokens[1]);
+            rating_data.rating = stod(tokens[2]);
 
             db.add_rating(userId, rating_data);
+            
+            // Debug (opcional)
+            /*
+            cout << "User: " << userId 
+                 << " Movie: " << rating_data.movieId 
+                 << " Rating: " << rating_data.rating 
+                 << " Timestamp: " << rating_data.timestamp << endl;
+            */
+        } catch (const exception& e) {
+            cerr << "Erro ao processar linha: " << line << endl;
+            cerr << "Erro: " << e.what() << endl;
         }
     }
 }
