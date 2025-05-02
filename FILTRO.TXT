@@ -1,0 +1,3 @@
+•Utilizar apenas usuários que tenham realizado pelo menos 50 avaliações distintas.
+•Utilizar apenas filmes avaliados por pelo menos 50 usuários.
+•Remover registros duplicados ou inconsistentes
