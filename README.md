@@ -29,7 +29,7 @@ double calcula_soma(int primeiro_numero, int segundo_numero) {}
 
 ## Metodologia
 
-### RatingData.hpp
+### rating_data.hpp
 
 Esse arquivo define a struct MovieRating, que armazena o id e avaliação de um filme.
 
@@ -40,3 +40,5 @@ usuario_id item_id1:nota1 item_id2:nota2 item_id3:nota3
 ```
 
 e retorna esse valor como uma string.
+
+###

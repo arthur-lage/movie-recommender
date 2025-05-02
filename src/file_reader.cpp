@@ -38,9 +38,7 @@ void FileReader::close() {
 
 void FileReader::process_ratings(RatingDatabase& db) {
     string line;
-    FileWriter inputFile("datasets/input.dat");
     
-    // Pular cabeçalho
     if (!getline(file, line)) {
         cerr << "Arquivo vazio ou erro na leitura" << endl;
         return;
@@ -48,8 +46,10 @@ void FileReader::process_ratings(RatingDatabase& db) {
 
     unordered_map<int, int> user_counts;
     unordered_map<int, int> movie_counts;
-    unordered_set<pair<int, int>, pair_hash> unique_ratings;
+    unordered_set<pair<int, double>, pair_hash> unique_ratings;
 
+
+    // conta quantidades de avaliacoes e filmes para filtrar futuramente
     while (getline(file, line)) {
         istringstream ss(line);
         string token;
@@ -79,6 +79,7 @@ void FileReader::process_ratings(RatingDatabase& db) {
     file.seekg(0);
     getline(file, line);
      
+    // percorre o arquivo novamente, salvando os filmes que serão usados no database
     while (getline(file, line)) {
         istringstream ss(line);
         string token;
@@ -100,7 +101,7 @@ void FileReader::process_ratings(RatingDatabase& db) {
                 auto key = make_pair(userId, movieId);
 
                 if(unique_ratings.find(key) == unique_ratings.end()) {
-                    int movieRating = stoi(tokens[2]);
+                    double movieRating = stod(tokens[2]);
 
                     MovieRating rating_data;
                     rating_data.movieId = movieId;
@@ -118,7 +119,14 @@ void FileReader::process_ratings(RatingDatabase& db) {
         }
     }
 
+    FileWriter inputFile("datasets/input.dat");
+
+    // formata e adiciona as informações no input.dat
     for (const auto& [userId, ratings] : db.getRatings()) {
         inputFile.write_line(get_formated_user_line(userId, ratings));
     }
+
+    // fechar arquivos abertos
+    inputFile.close();
+    close();
 }

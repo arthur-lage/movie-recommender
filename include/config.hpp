@@ -1,4 +1,4 @@
 #pragma once
 
-const int MININUM_REVIEW_COUNT_PER_USER = 5;
+const int MININUM_REVIEW_COUNT_PER_USER = 2;
 const int MININUM_REVIEW_COUNT_PER_MOVIE = 1;

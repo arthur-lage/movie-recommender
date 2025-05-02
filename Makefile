@@ -4,6 +4,7 @@ LDFLAGS  := -lm
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
 APP_DIR  := $(BUILD)/
+OUTCOME_DIR  := ./outcome
 TARGET   := app
 INCLUDE  := -Iinclude/
 SRC      := $(wildcard src/*.cpp) 
@@ -25,6 +26,7 @@ $(APP_DIR)/$(TARGET): $(OBJECTS)
 build:
 	@mkdir -p $(APP_DIR)
 	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(OUTCOME_DIR)
 
 debug: CXXFLAGS += -DDEBUG -g
 debug: all
