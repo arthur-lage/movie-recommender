@@ -2,7 +2,19 @@
 
 #include <iostream>
 #include <sstream>
+#include <utility>
 #include <string.h>
+#include <unordered_set>
+#include "config.hpp"
+
+struct pair_hash {
+    template <class T1, class T2>
+    std::size_t operator()(const std::pair<T1, T2>& p) const {
+        auto h1 = std::hash<T1>{}(p.first);  // Hash do primeiro elemento
+        auto h2 = std::hash<T2>{}(p.second); // Hash do segundo elemento
+        return h1 ^ (h2 << 1); // Combina os dois hashes
+    }
+};
 
 using namespace std;
 
@@ -32,37 +44,72 @@ void FileReader::process_ratings(RatingDatabase& db) {
         return;
     }
 
+    unordered_map<int, int> user_counts;
+    unordered_map<int, int> movie_counts;
+    unordered_set<pair<int, int>, pair_hash> unique_ratings;
+
     while (getline(file, line)) {
         istringstream ss(line);
         string token;
         vector<string> tokens;
         
-        // Separar todos os tokens primeiro
         while (getline(ss, token, ',')) {
             tokens.push_back(token);
         }
 
-        // Verificar se temos todos os campos necessários
         if (tokens.size() < 3) {
-            cerr << "Linha incompleta: " << line << endl;
             continue;
         }
 
         try {
             int userId = stoi(tokens[0]);
-            MovieRating rating_data;
-            rating_data.movieId = stoi(tokens[1]);
-            rating_data.rating = stod(tokens[2]);
+            int movieId = stoi(tokens[1]);
 
-            db.add_rating(userId, rating_data);
+            user_counts[userId]++;
+            movie_counts[movieId]++;
+        } catch (const exception& e) {
+            cerr << "Erro ao processar linha: " << line << endl;
+            cerr << "Erro: " << e.what() << endl;
+        }
+    }
+
+    file.clear();
+    file.seekg(0);
+    getline(file, line);
+     
+    while (getline(file, line)) {
+        istringstream ss(line);
+        string token;
+        vector<string> tokens;
+        
+        while (getline(ss, token, ',')) {
+            tokens.push_back(token);
+        }
+
+        if (tokens.size() < 3) {
+            continue;
+        }
+
+        try {
+            int userId = stoi(tokens[0]);
+            int movieId = stoi(tokens[1]);
+
+            if(user_counts[userId] >= MININUM_REVIEW_COUNT_PER_USER && movie_counts[movieId] >= MININUM_REVIEW_COUNT_PER_MOVIE) {
+                auto key = make_pair(userId, movieId);
+
+                if(unique_ratings.find(key) == unique_ratings.end()) {
+                    int movieRating = stoi(tokens[2]);
+
+                    MovieRating rating_data;
+                    rating_data.movieId = movieId;
+                    rating_data.rating = movieRating;
+
+                    db.add_rating(userId, rating_data);
+
+                    unique_ratings.insert(key);
+                }
+            }
             
-            // Debug (opcional)
-            /*
-            cout << "User: " << userId 
-                 << " Movie: " << rating_data.movieId 
-                 << " Rating: " << rating_data.rating 
-                 << " Timestamp: " << rating_data.timestamp << endl;
-            */
         } catch (const exception& e) {
             cerr << "Erro ao processar linha: " << line << endl;
             cerr << "Erro: " << e.what() << endl;
