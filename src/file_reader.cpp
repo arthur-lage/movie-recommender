@@ -1,3 +1,5 @@
+#include "config.hpp"
+#include "file_writer.hpp"
 #include "file_reader.hpp"
 
 #include <iostream>
@@ -5,7 +7,6 @@
 #include <utility>
 #include <string.h>
 #include <unordered_set>
-#include "config.hpp"
 
 struct pair_hash {
     template <class T1, class T2>
@@ -37,6 +38,7 @@ void FileReader::close() {
 
 void FileReader::process_ratings(RatingDatabase& db) {
     string line;
+    FileWriter inputFile("datasets/input.dat");
     
     // Pular cabeçalho
     if (!getline(file, line)) {
@@ -114,5 +116,9 @@ void FileReader::process_ratings(RatingDatabase& db) {
             cerr << "Erro ao processar linha: " << line << endl;
             cerr << "Erro: " << e.what() << endl;
         }
+    }
+
+    for (const auto& [userId, ratings] : db.getRatings()) {
+        inputFile.write_line(get_formated_user_line(userId, ratings));
     }
 }
