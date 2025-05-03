@@ -122,7 +122,7 @@ void FileReader::process_ratings(RatingDatabase& db) {
     FileWriter inputFile("datasets/input.dat");
 
     // formata e adiciona as informações no input.dat
-    for (const auto& [userId, ratings] : db.getRatings()) {
+    for (const auto& [userId, ratings] : db.get_ratings()) {
         inputFile.write_line(get_formated_user_line(userId, ratings));
     }
 

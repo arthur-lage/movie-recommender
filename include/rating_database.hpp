@@ -12,6 +12,5 @@ class RatingDatabase {
         unordered_map<int, vector<MovieRating>> ratings;
     public:
         void add_rating(int userId, MovieRating rating);
-        unordered_map<int, vector<MovieRating>> getRatings();
-        void filter();
+        unordered_map<int, vector<MovieRating>> get_ratings();
 };

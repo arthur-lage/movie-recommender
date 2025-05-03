@@ -9,7 +9,7 @@ using namespace std;
 
 int main() {
     RatingDatabase rating_db;
-    FileReader ratings_file("kaggle-data/ratings_little.csv");
+    FileReader ratings_file("kaggle-data/ratings.csv");
     ratings_file.process_ratings(rating_db);
 
     return 0;
