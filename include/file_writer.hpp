@@ -1,18 +1,12 @@
 #pragma once
 
+#include "file_handler.hpp"
 #include "custom_types.hpp"
-
-#include <fstream>
 
 using namespace std;
 
-class FileWriter {
-    private:
-        FILE* file = nullptr;
+class FileWriter : public FileHandler {
     public:
         FileWriter(const char* filename);
-        ~FileWriter();
-
-        void close();
         void generateInputFile(const UserRatings& userRatings);
 };

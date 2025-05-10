@@ -1,12 +1,12 @@
 #include <iostream>
 #include <chrono>
 
-#include "file_reader.hpp"
+#include "input_preprocessor.hpp"
 
 using namespace std;
 
 int main() {
-    FileReader ratings_file("kaggle-data/ratings.csv");
+    InputPreprocessor ratings_file("kaggle-data/ratings.csv");
     cout << "GENERATING INPUT.DAT...\n" << endl;
     
     auto start = chrono::high_resolution_clock::now();

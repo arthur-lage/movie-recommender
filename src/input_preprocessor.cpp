@@ -1,6 +1,6 @@
 #include "config.hpp"
 #include "file_writer.hpp"
-#include "file_reader.hpp"
+#include "input_preprocessor.hpp"
 #include "custom_types.hpp"
 
 #include <utility>
@@ -16,25 +16,7 @@
 
 using namespace std;
 
-FileReader::FileReader(const char* filename) {
-    file = fopen(filename, "r");
-
-    if (!file) {
-        cout << "Erro ao abrir arquivo" << endl;
-        exit(1);
-    }
-}
-
-FileReader::~FileReader() {
-    close();
-}
-
-void FileReader::close() {
-    if (file) {
-        fclose(file);
-        file = nullptr;
-    }
-}
+InputPreprocessor::InputPreprocessor(const char* filename) : FileHandler(filename) {}
 
 using CombinedKey = uint64_t;
 
@@ -98,7 +80,7 @@ void filter_and_collect_valid_ratings(FILE* file, char* line, size_t& len, ssize
     }
 }
 
-void FileReader::process_ratings() {
+void InputPreprocessor::process_ratings() {
     const char* input_path = "kaggle-data/ratings.csv";
     const char* output_path = "datasets/input.dat";
 
