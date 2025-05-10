@@ -1,20 +1,15 @@
 #pragma once
 
-// #include <fstream>
-
-#include "rating_data.hpp"
-#include "rating_database.hpp"
-
 using namespace std;
 
 class FileReader {
     private:
-        // ifstream file;
+        FILE* file = nullptr;
     public:
-        FileReader(std::string filename);
+        FileReader(const char* filename);
         ~FileReader();
 
-        void process_ratings(RatingDatabase& db);
+        void process_ratings();
 
         void close();
 };

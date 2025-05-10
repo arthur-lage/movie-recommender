@@ -1,16 +1,18 @@
 #pragma once
 
+#include "custom_types.hpp"
+
 #include <fstream>
 
 using namespace std;
 
 class FileWriter {
     private:
-        ofstream file;
+        FILE* file = nullptr;
     public:
-        FileWriter(std::string filename);
+        FileWriter(const char* filename);
         ~FileWriter();
 
-        void write_line(std::string line);
         void close();
+        void generateInputFile(const UserRatings& userRatings);
 };

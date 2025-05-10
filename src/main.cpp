@@ -1,16 +1,21 @@
 #include <iostream>
+#include <chrono>
 
-#include "rating_data.hpp"
-#include "file_writer.hpp"
 #include "file_reader.hpp"
-#include "rating_database.hpp"
 
 using namespace std;
 
 int main() {
-    RatingDatabase rating_db;
     FileReader ratings_file("kaggle-data/ratings.csv");
-    ratings_file.process_ratings(rating_db);
+    cout << "GENERATING INPUT.DAT...\n" << endl;
+    
+    auto start = chrono::high_resolution_clock::now();
+
+    ratings_file.process_ratings();
+
+    auto generateInputDuration = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - start);
+
+    cout << "\nFINISHED GENERATING INPUT.DAT. \n\nTOOK " << generateInputDuration.count() << " MS." << endl;
 
     return 0;
 }
