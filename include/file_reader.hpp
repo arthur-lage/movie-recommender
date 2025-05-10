@@ -1,6 +1,6 @@
 #pragma once
 
-#include <fstream>
+// #include <fstream>
 
 #include "rating_data.hpp"
 #include "rating_database.hpp"
@@ -9,7 +9,7 @@ using namespace std;
 
 class FileReader {
     private:
-        ifstream file;
+        // ifstream file;
     public:
         FileReader(std::string filename);
         ~FileReader();
