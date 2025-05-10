@@ -39,6 +39,12 @@ void FileReader::close() {
     // file.close();
 }
 
+using CombinedKey = uint64_t;
+
+constexpr CombinedKey make_key(int user, int movie) {
+    return (static_cast<uint64_t>(user) << 32) | static_cast<uint32_t>(movie);
+}
+
 void FileReader::process_ratings(RatingDatabase& db) {
     const char* input_path = "kaggle-data/ratings_little.csv";
     const char* output_path = "datasets/input.dat";
@@ -57,20 +63,81 @@ void FileReader::process_ratings(RatingDatabase& db) {
 
     // pula header
     getline(&line, &len, input_file);
+    
+    std::unordered_set<CombinedKey> unique_pairs;
+    std::unordered_map<int, int> user_counts;
+    std::unordered_map<int, int> movie_counts;
+
+    unique_pairs.reserve(25000000);
+    user_counts.reserve(200000);
+    movie_counts.reserve(200000);
 
     while((read = getline(&line, &len, input_file)) != -1) {
-        line[strlen(line) - 1] = '\0';
-        int userId, movieId;
-        float rating;
-        if(sscanf(line, "%d,%d,%f", &userId, &movieId, &rating) == 3) {
-            printf("User: %d, Movie: %d, Rating: %.1f\n", userId, movieId, rating);
-        } else {
-            printf("Error parsing line: %s\n", line);
+        char* p = line;
+        char* end;
+        
+        int user = strtol(p, &end, 10);
+        if (*end != ',') continue;
+        p = end + 1;
+        
+        int movie = strtol(p, &end, 10);
+        if (*end != ',') continue;
+        
+        CombinedKey key = make_key(user, movie);
+        if (unique_pairs.insert(key).second) {
+            user_counts[user]++;
+            movie_counts[movie]++;
         }
     }
 
     free(line);
     fclose(input_file);
+
+    // verifica usuarios e filmes que tenham pelo menos 50 avaliacoes
+
+    std::unordered_set<int> valid_users;
+    for (const auto& [user, count] : user_counts) {
+        if (count >= 50) valid_users.insert(user);
+    }
+
+    std::unordered_set<int> valid_movies;
+    for (const auto& [movie, count] : movie_counts) {
+        if (count >= 50) valid_movies.insert(movie);
+    }
+
+    // Second pass: Process valid entries
+    file = fopen(input_path, "r");
+    getline(&line, &len, file); // Skip header
+
+    std::unordered_map<int, std::vector<std::pair<int, float>>> output_map;
+    output_map.reserve(valid_users.size());
+
+    while ((read = getline(&line, &len, file)) != -1) {
+        char* p = line;
+        char* end;
+        
+        int user = strtol(p, &end, 10);
+        if (*end != ',') continue;
+        p = end + 1;
+        
+        int movie = strtol(p, &end, 10);
+        if (*end != ',') continue;
+        p = end + 1;
+        
+        float rating = strtof(p, &end);
+        if (end == p) continue;
+
+        CombinedKey key = make_key(user, movie);
+        if (unique_pairs.count(key) && 
+            valid_users.count(user) && 
+            valid_movies.count(movie)) {
+            output_map[user].emplace_back(movie, rating);
+            unique_pairs.erase(key); // Prevent duplicates
+        }
+    }
+
+    free(line);
+    fclose(file);
 
     // escrever no arquivo input.dat
 
