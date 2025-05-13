@@ -1,6 +1,10 @@
 # Trabalho 2 - AEDS
 ## Recomendação de filmes
 
+## IMPORTANTE!
+
+Para rodar o programa, é necessário ter o arquivo ratings.csv dentro da pasta kaggle-data. É necessário baixar esse arquivo disponível no pdf do trabalho.
+
 ## Convenção de estilo
 
 ### Nome de arquivos
