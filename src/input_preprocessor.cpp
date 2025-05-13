@@ -1,5 +1,4 @@
 #include "config.hpp"
-#include "file_writer.hpp"
 #include "input_preprocessor.hpp"
 #include "custom_types.hpp"
 
@@ -24,107 +23,95 @@ constexpr CombinedKey make_key(int user, int movie) {
     return (static_cast<uint64_t>(user) << 32) | static_cast<uint32_t>(movie);
 }
 
-void count_users_and_movies(FILE* file, char* line, size_t& len, ssize_t& read, unordered_set<CombinedKey>& unique_pairs, unordered_map<int, int>& user_counts, unordered_map<int, int>& movie_counts) {
-    while((read = getline(&line, &len, file)) != -1) {
-        char* p = line;
-        char* end;
-        
-        int user = strtol(p, &end, 10);
-        if (*end != ',') continue;
-        p = end + 1;
-        
-        int movie = strtol(p, &end, 10);
-        if (*end != ',') continue;
-        
-        CombinedKey key = make_key(user, movie);
-        if (unique_pairs.insert(key).second) {
-            user_counts[user]++;
-            movie_counts[movie]++;
+struct Rating {
+    int movie;
+    float score;
+    
+    // Required for unordered_set
+    bool operator==(const Rating& other) const {
+        return movie == other.movie;
+    }
+    
+    // Custom hash for Rating
+    struct Hash {
+        size_t operator()(const Rating& r) const {
+            return hash<int>()(r.movie);
         }
-    }
-}
-
-void find_valid_users_and_movies (unordered_set<int>& valid_users, unordered_set<int>& valid_movies, unordered_map<int,int>& user_counts, unordered_map<int,int>& movie_counts) {
-    for (const auto& [user, count] : user_counts) {
-        if (count >= MININUM_REVIEW_COUNT_PER_USER) valid_users.insert(user);
-    }
-
-    for (const auto& [movie, count] : movie_counts) {
-        if (count >= MININUM_REVIEW_COUNT_PER_MOVIE) valid_movies.insert(movie);
-    }
-}
-
-void filter_and_collect_valid_ratings(FILE* file, char* line, size_t& len, ssize_t& read, unordered_set<CombinedKey>& unique_pairs, unordered_set<int>& valid_users, unordered_set<int>& valid_movies, UserRatings& userRatings) {
-    while ((read = getline(&line, &len, file)) != -1) {
-        char* p = line;
-        char* end;
-        
-        int user = strtol(p, &end, 10);
-        if (*end != ',') continue;
-        p = end + 1;
-        
-        int movie = strtol(p, &end, 10);
-        if (*end != ',') continue;
-        p = end + 1;
-        
-        float rating = strtof(p, &end);
-        if (end == p) continue;
-
-        CombinedKey key = make_key(user, movie);
-        if (unique_pairs.count(key) && 
-            valid_users.count(user) && 
-            valid_movies.count(movie)) {
-            userRatings[user].emplace_back(movie, rating);
-            unique_pairs.erase(key);
-        }
-    }
-}
+    };
+};
 
 void InputPreprocessor::process_ratings() {
-    const char* input_path = "kaggle-data/ratings.csv";
     const char* output_path = "datasets/input.dat";
+    const size_t BUFFER_SIZE = 1 << 20; // 1MB
 
-    char* line = nullptr;
+    unordered_map<int, int> movie_counter;
+    unordered_map<int, unordered_set<Rating, Rating::Hash>> user_data;
+
+    char *line = nullptr;
     size_t len = 0;
     ssize_t read;
 
-    // pula header
-    getline(&line, &len, file);
+    // Pular header
+    read = getline(&line, &len, file);
     
-    unordered_set<CombinedKey> unique_pairs;
-    unordered_map<int, int> user_counts;
-    unordered_map<int, int> movie_counts;
-    unordered_set<int> valid_users;
-    unordered_set<int> valid_movies;
+    while ((read = getline(&line, &len, file)) != -1) {
+        int user, movie;
+        float score;
+        char* p = line;
+        char* end;
 
+        user = strtol(p, &end, 10);
+        if (*end != ',') continue;
+        p = end + 1;
+        
+        movie = strtol(p, &end, 10);
+        if (*end != ',') continue;
+        p = end + 1;
+        
+        score = strtof(p, &end);
+        if (end == p) continue;
 
-    unique_pairs.reserve(25000000);
-    user_counts.reserve(200000);
-    movie_counts.reserve(200000);
+        // Inserir rating único e contar filmes
+        Rating rating{movie, score};
+        if (user_data[user].insert(rating).second) {
+            movie_counter[movie]++;
+        }
+    }
 
-    count_users_and_movies(file, line, len, read, unique_pairs, user_counts, movie_counts);
+    // Escrever saída otimizada
+    FILE* output_file = fopen(output_path, "w");
+    char buffer[BUFFER_SIZE];
+    size_t offset = 0;
 
+    for (const auto& [user, ratings] : user_data) {
+        if (ratings.size() < 50) continue;
+
+        char line_buffer[16384]; // 16KB por linha
+        int pos = snprintf(line_buffer, sizeof(line_buffer), "%d", user);
+
+        for (const auto& rating : ratings) {
+            if (movie_counter[rating.movie] >= 50 && pos < (int)sizeof(line_buffer) - 256) {
+                pos += snprintf(
+                    line_buffer + pos,
+                    sizeof(line_buffer) - pos,
+                    " %d:%.1f",
+                    rating.movie,
+                    rating.score
+                );
+            }
+        }
+
+        // Gerenciamento de buffer
+        line_buffer[pos++] = '\n';
+        if (offset + pos > BUFFER_SIZE) {
+            fwrite(buffer, 1, offset, output_file);
+            offset = 0;
+        }
+        memcpy(buffer + offset, line_buffer, pos);
+        offset += pos;
+    }
+
+    fwrite(buffer, 1, offset, output_file);
+    fclose(output_file);
     free(line);
-    close();
-
-    find_valid_users_and_movies(valid_users, valid_movies, user_counts, movie_counts);
-
-    // processar entradas
-    file = fopen(input_path, "r");
-    getline(&line, &len, file);
-
-    UserRatings userRatings;
-    userRatings.reserve(valid_users.size());
-
-    filter_and_collect_valid_ratings(file, line, len, read, unique_pairs, valid_users, valid_movies, userRatings);
-
-    free(line);
-    close();
-
-    // escrever no arquivo input.dat
-
-    FileWriter output_file(output_path);
-    output_file.generateInputFile(userRatings);
-    output_file.close();
 }
-

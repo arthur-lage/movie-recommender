@@ -1,5 +1,5 @@
 CXX      := g++                 
-CXXFLAGS := -Wall -Wextra -Werror
+CXXFLAGS := -Wall -Wextra -Werror -O3
 LDFLAGS  := -lm                 
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
@@ -11,7 +11,7 @@ SRC      := $(wildcard src/*.cpp)
 
 OBJECTS := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 
-all: clean build $(APP_DIR)/$(TARGET) run
+all: clean build $(APP_DIR)/$(TARGET)
 
 $(OBJ_DIR)/%.o: %.cpp         
 	@mkdir -p $(@D)
