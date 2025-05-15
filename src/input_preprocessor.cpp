@@ -43,8 +43,11 @@ void InputPreprocessor::process_ratings() {
     const char* output_path = "datasets/input.dat";
     const size_t BUFFER_SIZE = 1 << 20; // 1MB
 
-    unordered_map<int, int> movie_counter;
+    vector<uint16_t> movie_counter(230000+1, 0);
     unordered_map<int, unordered_set<Rating, Rating::Hash>> user_data;
+
+    movie_counter.reserve(62000);
+    user_data.reserve(103000);
 
     char *line = nullptr;
     size_t len = 0;
@@ -59,11 +62,11 @@ void InputPreprocessor::process_ratings() {
         char* p = line;
         char* end;
 
-        user = strtol(p, &end, 10);
+        user = strtoul(p, &end, 10);
         if (*end != ',') continue;
         p = end + 1;
         
-        movie = strtol(p, &end, 10);
+        movie = strtoul(p, &end, 10);
         if (*end != ',') continue;
         p = end + 1;
         
@@ -109,6 +112,7 @@ void InputPreprocessor::process_ratings() {
         memcpy(buffer + offset, line_buffer, pos);
         offset += pos;
     }
+
 
     fwrite(buffer, 1, offset, output_file);
     fclose(output_file);
