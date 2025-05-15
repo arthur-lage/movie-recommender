@@ -1,6 +1,5 @@
 #include "config.hpp"
 #include "input_preprocessor.hpp"
-#include "custom_types.hpp"
 
 #include <utility>
 #include <unordered_set>

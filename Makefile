@@ -11,7 +11,7 @@ SRC      := $(wildcard src/*.cpp)
 
 OBJECTS := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 
-all: clean build $(APP_DIR)/$(TARGET)
+all: clean build $(APP_DIR)/$(TARGET) run
 
 $(OBJ_DIR)/%.o: %.cpp         
 	@mkdir -p $(@D)
