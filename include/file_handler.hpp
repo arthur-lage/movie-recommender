@@ -8,7 +8,7 @@ class FileHandler {
     protected:
         FILE* file = nullptr;
     public:
-        FileHandler(const char* filename);
+        FileHandler(const char* filename, const char* mode);
         ~FileHandler();
 
         void close();

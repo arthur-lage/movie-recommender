@@ -6,7 +6,7 @@
 using namespace std;
 
 int main() {
-    InputPreprocessor ratings_file("kaggle-data/ratings.csv");
+    InputPreprocessor ratings_file("kaggle-data/ratings.csv", "r");
     cout << "GENERATING INPUT.DAT...\n" << endl;
     
     auto start = chrono::high_resolution_clock::now();

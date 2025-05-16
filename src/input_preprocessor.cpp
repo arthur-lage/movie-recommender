@@ -14,7 +14,7 @@
 
 using namespace std;
 
-InputPreprocessor::InputPreprocessor(const char* filename) : FileHandler(filename) {}
+InputPreprocessor::InputPreprocessor(const char* filename, const char* mode) : FileHandler(filename, mode) {}
 
 using CombinedKey = uint64_t;
 

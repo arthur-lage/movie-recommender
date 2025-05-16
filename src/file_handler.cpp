@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-FileHandler::FileHandler(const char* filename) {
-    file = fopen(filename, "r");
+FileHandler::FileHandler(const char* filename, const char* mode) {
+    file = fopen(filename, mode);
 
     if (!file) {
         cout << "Erro ao abrir arquivo" << endl;

@@ -6,6 +6,6 @@ using namespace std;
 
 class InputPreprocessor : public FileHandler {
     public:
-        InputPreprocessor(const char* filename);
+        InputPreprocessor(const char* filename, const char* mode);
         void process_ratings();
 };
