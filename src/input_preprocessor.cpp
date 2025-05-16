@@ -39,23 +39,7 @@ struct Rating {
     };
 };
 
-void InputPreprocessor::process_ratings() {
-    const char* output_path = "datasets/input.dat";
-    const size_t BUFFER_SIZE = 1 << 20; // 1MB
-
-    vector<uint16_t> movie_counter(230000+1, 0);
-    unordered_map<int, unordered_set<Rating, Rating::Hash>> user_data;
-
-    movie_counter.reserve(62000);
-    user_data.reserve(103000);
-
-    char *line = nullptr;
-    size_t len = 0;
-    ssize_t read;
-
-    // Pular header
-    read = getline(&line, &len, file);
-    
+void read_data(ssize_t& read, char* line, size_t& len, FILE* file, unordered_map<int, unordered_set<Rating, Rating::Hash>>& user_data, vector<uint16_t>& movie_counter) {
     while ((read = getline(&line, &len, file)) != -1) {
         int user, movie;
         float score;
@@ -79,8 +63,12 @@ void InputPreprocessor::process_ratings() {
             movie_counter[movie]++;
         }
     }
+}
 
-    // Escrever saída otimizada
+void write_data_to_output(unordered_map<int, unordered_set<Rating, Rating::Hash>>& user_data, vector<uint16_t>& movie_counter) {
+    const char* output_path = "datasets/input.dat";
+    const size_t BUFFER_SIZE = 1 << 20; // 1MB
+
     FILE* output_file = fopen(output_path, "w");
     char buffer[BUFFER_SIZE];
     size_t offset = 0;
@@ -116,5 +104,23 @@ void InputPreprocessor::process_ratings() {
 
     fwrite(buffer, 1, offset, output_file);
     fclose(output_file);
+}
+
+void InputPreprocessor::process_ratings() {
+    vector<uint16_t> movie_counter(230000+1, 0);
+    unordered_map<int, unordered_set<Rating, Rating::Hash>> user_data;
+
+    movie_counter.reserve(62000);
+    user_data.reserve(103000);
+
+    char *line = nullptr;
+    size_t len = 0;
+    ssize_t read;
+
+    read = getline(&line, &len, file);
+    
+    read_data(read, line, len, file, user_data, movie_counter);
+    write_data_to_output(user_data, movie_counter);
+    
     free(line);
 }
