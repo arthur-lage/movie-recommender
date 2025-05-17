@@ -45,4 +45,5 @@ A segunda constante define a quantidade mínima de avaliações que um filme dev
 
 A terceira constante define a quantidade de recomendações que cada usuário irá receber.
 
-###
+## Autores
+
