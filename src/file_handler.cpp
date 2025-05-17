@@ -6,7 +6,7 @@ FileHandler::FileHandler(const char* filename, const char* mode) {
     file = fopen(filename, mode);
 
     if (!file) {
-        cout << "Erro ao abrir arquivo" << endl;
+        cout << "Erro ao abrir arquivo: " << filename << endl;
         exit(1);
     }
 }

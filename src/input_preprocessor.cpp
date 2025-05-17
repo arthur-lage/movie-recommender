@@ -1,4 +1,5 @@
 #include "config.hpp"
+#include "custom_types.hpp"
 #include "input_preprocessor.hpp"
 
 #include <utility>
@@ -22,22 +23,6 @@ constexpr CombinedKey make_key(int user, int movie) {
     return (static_cast<uint64_t>(user) << 32) | static_cast<uint32_t>(movie);
 }
 
-struct Rating {
-    int movie;
-    float score;
-    
-    // Required for unordered_set
-    bool operator==(const Rating& other) const {
-        return movie == other.movie;
-    }
-    
-    // Custom hash for Rating
-    struct Hash {
-        size_t operator()(const Rating& r) const {
-            return hash<int>()(r.movie);
-        }
-    };
-};
 
 void read_data(ssize_t& read, char* line, size_t& len, FILE* file, unordered_map<int, unordered_set<Rating, Rating::Hash>>& user_data, vector<uint16_t>& movie_counter) {
     while ((read = getline(&line, &len, file)) != -1) {
