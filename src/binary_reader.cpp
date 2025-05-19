@@ -6,7 +6,7 @@
 
 using namespace std;
 
-BinaryReader::BinaryReader(const char* filename, const char* mode) : FileHandler(filename, mode) {}
+BinaryReader::BinaryReader(const char* filename) : FileHandler(filename, "rb") {}
 
 void process_line (char* line, UsersAndMoviesData& usersAndMovies) {
     size_t len = strlen(line);

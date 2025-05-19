@@ -3,10 +3,13 @@
 #include "file_handler.hpp"
 #include "custom_types.hpp"
 
+#include <unordered_set>
+
 class BinaryReader : public FileHandler {
     private:
 
     public:
-        BinaryReader(const char* filename, const char* mode);
+        BinaryReader(const char* filename);
         void process_input(UsersAndMoviesData& usersAndMovies);
+        void process_explore(unordered_set<int> usersToRecommend);
 };

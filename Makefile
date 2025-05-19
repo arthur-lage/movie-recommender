@@ -1,5 +1,6 @@
 CXX      := g++                 
-CXXFLAGS := -Wall -Wextra -Werror -O3
+# CXXFLAGS := -Wall -Wextra -Werror -O3
+CXXFLAGS := -O3
 LDFLAGS  := -lm                 
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects

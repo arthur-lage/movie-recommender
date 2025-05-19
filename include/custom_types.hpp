@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 #include <unordered_set>
-
+#include <string>
 
 using namespace std;
 
@@ -24,3 +24,4 @@ struct Rating {
 };
 
 using UsersAndMoviesData = unordered_map<int, unordered_set<Rating, Rating::Hash>>;
+using MoviesData = unordered_map<int, std::string>;
