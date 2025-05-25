@@ -1,0 +1,6 @@
+#pragma once
+
+const int MININUM_REVIEW_COUNT_PER_USER = 1;
+const int MININUM_REVIEW_COUNT_PER_MOVIE = 1;
+
+const int NUMBER_OF_RECOMMENDATIONS_PER_USER = 10;
