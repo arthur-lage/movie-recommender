@@ -45,6 +45,18 @@ A segunda constante define a quantidade mínima de avaliações que um filme dev
 
 A terceira constante define a quantidade de recomendações que cada usuário irá receber.
 
+### Especificações do computador de testes
+
+Os testes do algoritmo foram feitos no seguinte dispositivo:
+
+```
+Modelo: Acer Nitro ANV15-51;
+CPU: 13th Gen Intel® Core™ i5-13420H × 12;
+Memória: 8.0 GiB
+Disco: SSD 512 GB
+Sistema Operacional: Ubuntu 24.04.1 LTS 
+```
+
 ### Correlação de Pearson
 
 Retorno: entre -1 e 1. Quanto mais perto de 0 pior(mais desperso). Quanto mais próximo de 1 ou -1, melhor (mais concentrado).
