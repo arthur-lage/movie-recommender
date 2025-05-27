@@ -14,7 +14,7 @@
 
 using namespace std;
 
-std::vector<int> selectRandomUsers(const UsersAndMoviesData& usersAndMovies, int sampleSize = 5) {
+std::vector<int> selectRandomUsers(const UsersAndMoviesData& usersAndMovies, int sampleSize = 50) {
     std::vector<int> allUsers;
     for (const auto& [userId, _] : usersAndMovies) {
         allUsers.push_back(userId);
@@ -72,8 +72,8 @@ int main() {
     
     // generate random explore.dat
 
-    // std::vector<int> randomUsers = selectRandomUsers(usersAndMovies);
-    // writeExploreFile(randomUsers);
+    std::vector<int> randomUsers = selectRandomUsers(usersAndMovies);
+    writeExploreFile(randomUsers);
     
     RecommenderEuclidean euclideanRec;
     euclideanRec.generateRecommendations(usersAndMovies, movies);

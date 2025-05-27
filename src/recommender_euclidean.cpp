@@ -152,7 +152,10 @@ void RecommenderEuclidean::generateRecommendations(const UsersAndMoviesData& use
         std::cout << "\n\n";
     }
 
+    size_t s = durations.size();
+    double media = 0;
     for(const auto& dur : durations) {
-        std::cout << "Took " << dur << " ms to generate this rec." << std::endl;
+        media += dur;
     }
+    std::cout << "Media total: " << (media / s) << " ms" << std::endl;
 }
