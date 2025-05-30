@@ -57,5 +57,63 @@ Disco: SSD 512 GB
 Sistema Operacional: Ubuntu 24.04.1 LTS 
 ```
 
+## Métodos de recomendação
+
+Para esse projeto, testamos diferentes métodos de gerar recomendações, com o objetivo de encontrar um que possuísse melhor desempenho para o programa.
+Foram testadas as seguintes estratégias:
+
+- Distância euclidiana 
+- Similaridade de Cossenos
+- Correlação de Pearson
+- Jaccard
+- Manhattan
+
+Abaixo está uma breve descrição sobre esses métodos, e a performance média que obtivemos nos testes.
+
+### Distância euclidiana
+
+Esse método funciona da seguinte maneira:
+
+- 1. Compara um usuário desejado com os outros com base na nota de seus filmes assistidos em comum.
+- 2. Avalia quais são os usuários com notas mais similares para esses filmes (Nesse projeto, são utilizados os 10 usuários mais parecidos).
+- 3. Recomenda para o usuário alvo os filmes que os usuários similares já assistiram e deram notas altas.
+
+Exemplo: 
+
+![Tabela De Avaliações para o exemplo](/imgs/table_euclidean_example.png)
+
+Para gerar recomendações para o usuário 1:
+
+- 1. Verifica quais usuários assistiram filmes em comum com ele.
+- 2. Como o usuário 2 não possui filmes em comum com o usuário 1, ele é ignorado.
+- 3. O usuário 3 possui 2 filmes em comum com o usuário 1 (10 e 12).
+- 4. É calculada a distância euclidiana com a fórmula para os usuários em comum:
+
+![Fórmula da distância por euclidiano](/imgs/formula_euclidean_example.png)
+
+- 5. Verifica-se quais foram os usuários com menor distância (maior similaridade).
+- 6. Calcula-se um peso, que é inversamente proporcional à distância: (1.0 / (1.0 + distancia)).
+- 7. Agora para cada filme não assistido, é calculada uma média ponderada, utilizando o peso e a nota dos filmes não assistidos ainda.
+- 8. Essa média é uma predição da nota que o usuário alvo poderia dar para o filme.
+- 9. São selecionados os top 10 filmes com maior média, sendo esses os filmes recomendados para o usuário alvo.
+
+Média de tempo para gerar recomendações para um usuário com esse método (10 testes para os mesmos usuários aleatórios): 330.28 milisegundos.
+
+### Correlação de Pearson
+
+Retorno: entre -1 e 1. Quanto mais perto de 0 pior(mais desperso). Quanto mais próximo de 1 ou -1, melhor (mais concentrado).
+<img src="imgs/pearson.png"><img>
+
+Considerando "r" como o resultado da relação, tem-se: <br>
+-r = |±1| → relação linear perfeita;<br>
+-r = |±0,70| → relação linear forte;<br>
+-r = |±0,50| → relação linear moderada;<br>
+-r = |±0,30| → relação linear fraca;<br>
+-r = 0 → ausência de relação linear.
+
+Como funciona o cálculo: raiz da soma dos produtos dos desvios dividida pelo produto dos desvios padrão.
+<img src="imgs/pearsonFormula.png"><img> <br>
+TEMPO: Person levou em média 617,6 ms para gerar 1 recomendação
+
 ## Autores
 
