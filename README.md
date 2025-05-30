@@ -3,7 +3,7 @@
 
 ## IMPORTANTE!
 
-Para rodar o programa, é necessário ter o arquivo ratings.csv dentro da pasta kaggle-data. É necessário baixar esse arquivo disponível no pdf do trabalho.
+Para rodar o programa, é preciso ter os arquivos movies.csv e ratings.csv dentro da pasta kaggle-data. É necessário baixar esses arquivos disponíveis no link do PDF do trabalho.
 Além disso, no arquivo "datasets/explore.dat" devem estar definido em cada linha, o id do usuário que receberá recomendações.
 
 ## Metodologia
@@ -44,18 +44,6 @@ A primeira constante define a quantidade mínima de avaliações que um usuário
 A segunda constante define a quantidade mínima de avaliações que um filme deve possuir para ser incluído no "input.dat".
 
 A terceira constante define a quantidade de recomendações que cada usuário irá receber.
-
-### Especificações do computador de testes
-
-Os testes do algoritmo foram feitos no seguinte dispositivo:
-
-```
-Modelo: Acer Nitro ANV15-51;
-CPU: 13th Gen Intel® Core™ i5-13420H × 12;
-Memória: 8.0 GiB
-Disco: SSD 512 GB
-Sistema Operacional: Ubuntu 24.04.1 LTS 
-```
 
 ## Métodos de recomendação
 
@@ -115,5 +103,48 @@ Como funciona o cálculo: raiz da soma dos produtos dos desvios dividida pelo pr
 <img src="imgs/pearsonFormula.png"><img> <br>
 TEMPO: Person levou em média 617,6 ms para gerar 1 recomendação
 
+
+### Especificações do computador de testes
+
+Os testes do algoritmo foram feitos no seguinte dispositivo:
+
+```
+Modelo: Acer Nitro ANV15-51;
+CPU: 13th Gen Intel® Core™ i5-13420H × 12;
+Memória: 8.0 GiB
+Disco: SSD 512 GB
+Sistema Operacional: Ubuntu 24.04.1 LTS 
+```
+
 ## Autores
 
+<div>
+    <strong>Arthur Lage<strong>
+    <a href="https://linkedin.com/arthur-lage">LinkedIn</a>
+    <a href="https://github.com/arthur-lage">GitHub</a>
+</div>
+<br>
+<div>
+    <strong>Danniel Holanda<strong>
+    <a href="https://linkedin.com/arthur-lage">LinkedIn</a>
+    <a href="https://github.com/arthur-lage">GitHub</a>
+</div>
+<br>
+<div>
+    <strong>Jade Giulia<strong>
+    <a href="https://linkedin.com/arthur-lage">LinkedIn</a>
+    <a href="https://github.com/arthur-lage">GitHub</a>
+</div>
+<br>
+<div>
+    <strong>Luiza Magalhães<strong>
+    <a href="https://linkedin.com/arthur-lage">LinkedIn</a>
+    <a href="https://github.com/arthur-lage">GitHub</a>
+</div>
+<br>
+<div>
+    <strong>William Leão<strong>
+    <a href="https://linkedin.com/arthur-lage">LinkedIn</a>
+    <a href="https://github.com/arthur-lage">GitHub</a>
+</div>
+<br>
