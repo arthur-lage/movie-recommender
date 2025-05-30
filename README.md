@@ -1,10 +1,20 @@
 # Trabalho 2 - AEDS
 ## Recomendação de filmes
 
+<div>
+    <img src="https://img.shields.io/badge/Kaggle-20BEFF?style=for-the-badge&logo=Kaggle&logoColor=white"/>
+    <img src="https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white"/>
+    <img src="https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white"/>
+    <img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black"/>
+    <img src="https://img.shields.io/badge/GIT-E44C30?style=for-the-badge&logo=git&logoColor=white"/>
+</div>
+
 ## IMPORTANTE!
 
 Para rodar o programa, é preciso ter os arquivos movies.csv e ratings.csv dentro da pasta kaggle-data. É necessário baixar esses arquivos disponíveis no link do PDF do trabalho.
 Além disso, no arquivo "datasets/explore.dat" devem estar definido em cada linha, o id do usuário que receberá recomendações.
+
+## Introdução
 
 ## Metodologia
 
@@ -120,31 +130,51 @@ Sistema Operacional: Ubuntu 24.04.1 LTS
 
 <div>
     <strong>Arthur Lage<strong>
-    <a href="https://linkedin.com/arthur-lage">LinkedIn</a>
-    <a href="https://github.com/arthur-lage">GitHub</a>
+    <a href="https://linkedin.com/arthur-lage">
+        <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
+    </a>
+    <a href="https://github.com/arthur-lage">
+        <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
+    </a>
 </div>
 <br>
 <div>
     <strong>Danniel Holanda<strong>
-    <a href="https://linkedin.com/arthur-lage">LinkedIn</a>
-    <a href="https://github.com/arthur-lage">GitHub</a>
+    <a href="https://linkedin.com/arthur-lage">
+        <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
+    </a>
+    <a href="https://github.com/arthur-lage">
+        <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
+    </a>
 </div>
 <br>
 <div>
     <strong>Jade Giulia<strong>
-    <a href="https://linkedin.com/arthur-lage">LinkedIn</a>
-    <a href="https://github.com/arthur-lage">GitHub</a>
+    <a href="https://linkedin.com/arthur-lage">
+        <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
+    </a>
+    <a href="https://github.com/arthur-lage">
+        <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
+    </a>
 </div>
 <br>
 <div>
     <strong>Luiza Magalhães<strong>
-    <a href="https://linkedin.com/arthur-lage">LinkedIn</a>
-    <a href="https://github.com/arthur-lage">GitHub</a>
+    <a href="https://linkedin.com/arthur-lage">
+        <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
+    </a>
+    <a href="https://github.com/arthur-lage">
+        <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
+    </a>
 </div>
 <br>
 <div>
     <strong>William Leão<strong>
-    <a href="https://linkedin.com/arthur-lage">LinkedIn</a>
-    <a href="https://github.com/arthur-lage">GitHub</a>
+    <a href="https://linkedin.com/arthur-lage">
+        <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
+    </a>
+    <a href="https://github.com/arthur-lage">
+        <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
+    </a>
 </div>
 <br>
