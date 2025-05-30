@@ -130,10 +130,10 @@ Sistema Operacional: Ubuntu 24.04.1 LTS
 
 <div>
     <strong>Arthur Lage<strong>
+    <br/>
     <a href="https://linkedin.com/arthur-lage">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
-    <br/>
     <a href="https://github.com/arthur-lage">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
@@ -141,10 +141,10 @@ Sistema Operacional: Ubuntu 24.04.1 LTS
 <br>
 <div>
     <strong>Danniel Holanda<strong>
+    <br/>
     <a href="https://linkedin.com/arthur-lage">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
-    <br/>
     <a href="https://github.com/arthur-lage">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
@@ -152,10 +152,10 @@ Sistema Operacional: Ubuntu 24.04.1 LTS
 <br>
 <div>
     <strong>Jade Giulia<strong>
+    <br/>
     <a href="https://linkedin.com/arthur-lage">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
-    <br/>
     <a href="https://github.com/arthur-lage">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
@@ -163,10 +163,10 @@ Sistema Operacional: Ubuntu 24.04.1 LTS
 <br>
 <div>
     <strong>Luiza Magalhães<strong>
+    <br/>
     <a href="https://linkedin.com/arthur-lage">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
-    <br/>
     <a href="https://github.com/arthur-lage">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
@@ -174,10 +174,10 @@ Sistema Operacional: Ubuntu 24.04.1 LTS
 <br>
 <div>
     <strong>William Leão<strong>
+    <br/>
     <a href="https://linkedin.com/arthur-lage">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
-    <br/>
     <a href="https://github.com/arthur-lage">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
