@@ -16,6 +16,8 @@ Além disso, no arquivo "datasets/explore.dat" devem estar definido em cada linh
 
 ## Introdução
 
+Esse projeto foi desenvolvido como trabalho final da disciplina de Algoritmos e Estruturas de Dados I, ministrada por Michel Pires, do curso de Engenharia de Computação do CEFET-MG (Campus Divinópolis). O objetivo desse trabalho é gerar recomendações de filmes para usuários específicos com base numa base de dados de filmes pública, que possui mais de 25 milhões de registros, contendo identificadores para os usuários e filmes, suas avaliações e o momento em que o registro foi feito. O trabalho foi desenvolvido utilizando as linguagens C e C++, com o grupo sendo composto por 5 pessoas.
+
 ## Metodologia
 
 Nesta etapa da documentação, explicaremos a linha de raciocínio utilizada para pensar as funcionalidades e decisões desse programa.
