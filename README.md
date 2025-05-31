@@ -115,6 +115,52 @@ Como funciona o cálculo: raiz da soma dos produtos dos desvios dividida pelo pr
 <img src="imgs/pearsonFormula.png"><img> <br>
 TEMPO: Person levou em média 617,6 ms para gerar 1 recomendação
 
+### Jaccard
+
+A Similaridade de Jaccard é uma medida estatística que calcula a similaridade entre dois conjuntos, com base na interseção e na união desses conjuntos. Essa métrica é definida como o tamanho da interseção dividido pelo tamanho da união dos conjuntos. Em outras palavras, a Similaridade de Jaccard mede a proporção de elementos comuns entre os conjuntos em relação ao total de elementos presentes nos conjuntos.
+
+- Formula
+
+<div align="center" style="font-size: 24px; font-family: Arial, sans-serif;">
+  <b>J(A, B) = |A ∩ B| / |A ∪ B|</b>
+</div>
+
+Onde: 
+ - A∩B = elementos em comum entre A e B;
+ - A∪B= todos os elementos únicos de A e B juntos.
+
+
+#### Funcionamento
+
+ 1° Comparação entre usuários:
+  - Compara um usuário desejado com os outros com base nos filmes assistidos em comum.
+  - Avalia quais são os usuários com perfis mais similares
+
+2° Gerar as recomendações:
+ - Recomenda para o usuário alvo os filmes que os usuários similares já assistiram, mas que ele ainda não viu.
+ - Prioriza filmes que aparecem com mais frequência entre os usuários similares.
+
+#### Exemplo:
+
+<img src="imgs/tabelajaccard.png" width="250">
+
+Processamento para o Usuário 1
+
+ - *1°: Encontra usuários com filmes em comum:*
+
+   - Usuário 3 tem 2 filmes em comum com o Usuário 1 (filmes100 e 102).
+   - Usuário 2 não tem filmes em comum e é ignorado.
+
+- *2°:  Calcula a similaridade de Jaccard:*
+
+  - Interseção (filmes em comum): 2 (100 e 102)
+  - União (total de filmes únicos): 5 (100, 102, 103, 121, 122)
+  - Similaridade = 2/5 = 0.4
+
+- *3° Gerar as recomendações:*
+
+  - Filmes do Usuário 3 não vistos pelo Usuário 1: {121, 212}
+  - Como só tem um usuário similar (Usuário 3), ambos os filmes são recomendados com peso 1.
 
 ### Especificações do computador de testes
 
