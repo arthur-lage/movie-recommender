@@ -142,7 +142,7 @@ Onde:
 
 #### Exemplo:
 
-<img src="imgs/tabelajaccard.png" width="250">
+<img src="imgs/tabelajaccard.jpg" width="250">
 
 Processamento para o Usuário 1
 
