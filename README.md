@@ -174,6 +174,35 @@ Disco: SSD 512 GB
 Sistema Operacional: Ubuntu 24.04.1 LTS 
 ```
 
+### Manhattan
+
+A distância de Manhattan é uma métrica usada para determinar a distância entre dois pontos em um caminho semelhante a uma grade. Ela mede a soma das diferenças absolutas entre as coordenadas dos pontos.
+Matematicamente, a distância de Manhattan entre dois pontos em um espaço n-dimensional é a soma das diferenças absolutas de suas coordenadas cartesianas.
+
+#### Propriedades 
+A distância de Manhattan satisfaz todas as quatro condições necessárias para uma função de distância em um espaço métrico:
+
+- 1. *Não negatividade:* A distância entre dois pontos quaisquer é sempre não negativa. d(x, y) ≥ 0 para todos os x e y.
+- 2. *Identidade de indiscerníveis:* A distância entre um ponto e ele mesmo é zero, e se a distância entre dois pontos for zero, eles são o mesmo ponto. d(x, y) = 0 se e somente se x = y.
+- 3. *Simetria:* A distância do ponto A ao ponto B é a mesma que a distância de B a A. d(x, y) = d(y, x) para todos os x e y.
+- 4. *Desigualdade triangular:* A distância entre dois pontos é sempre menor ou igual à soma das distâncias entre esses pontos e um terceiro ponto. d(x, z) ≤ d(x, y) + d(y, z) para todos os x, y e z.
+
+Diferentemente da distância de cosseno, que não satisfaz a desigualdade triangular, a adesão da distância de Manhattan a todas essas propriedades a torna útil em várias aplicações matemáticas e computacionais. Por exemplo:
+
+- Em algoritmos de otimização, a desigualdade triangular pode ser usada para eliminar espaços de pesquisa com eficiência.
+- Em estruturas de dados como árvores métricas, essas propriedades permitem pesquisas mais rápidas do vizinho mais próximo.
+- No machine learning, os algoritmos que se baseiam em métricas de distância (como k-nearest neighbors) podem aproveitar essas propriedades para obter garantias teóricas e implementações eficientes.
+  
+#### Como código está implementado
+
+O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado.
+- read_explore_file: Lê o arquivo datasets/explore.dat para identificar os usuários que devem receber recomendações e armazena os IDs no unordered_set<int> usersToRecommend.
+- computeDistance: Calcula a distância(similiaridade) de Manhattan entre dois usuários, fazendo a soma das diferenças absolutas das notas dadas aos mesmos filmes (avaliados por ambos). Quando não há filmes em comum, retorna INFINITY (sem similaridade).
+- *findSimilarUsers:*Recebe um usuário-alvo e os dados de avaliações de todos os usuários, com isso compara o usuário-alvo com todos os outros, usando computeDistance e depois ordena os usuários com a menor distância retornando os mais proximos.
+- getRecommendations: Gera recomendações de filmes para o usuário-alvo, baseado nos similares. Para cada filme que o usuário-alvo ainda não viu, acumula uma média ponderada das notas dos usuários similares. Peso = 1 / (1 + distância) → mais próximo = maior peso. Retorna uma lista ordenada com os filmes recomendados e suas pontuações estimadas.
+- generateRecommendations: Principal função que é responsavel por lê os usuários a serem recomendados, onde para cada usuário encontra usuários similares (findSimilarUsers), gera as recomendações(getRecommendations) e exibe elas medindo o tempo de execução de cada recomendação e calcula o tempo médio no final.
+
+
 ## Autores
 
 <div>
