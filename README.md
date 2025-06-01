@@ -162,18 +162,6 @@ Processamento para o Usuário 1
   - Filmes do Usuário 3 não vistos pelo Usuário 1: {121, 212}
   - Como só tem um usuário similar (Usuário 3), ambos os filmes são recomendados com peso 1.
 
-### Especificações do computador de testes
-
-Os testes do algoritmo foram feitos no seguinte dispositivo:
-
-```
-Modelo: Acer Nitro ANV15-51;
-CPU: 13th Gen Intel® Core™ i5-13420H × 12;
-Memória: 8.0 GiB
-Disco: SSD 512 GB
-Sistema Operacional: Ubuntu 24.04.1 LTS 
-```
-
 ### Manhattan
 
 A distância de Manhattan é uma métrica usada para determinar a distância entre dois pontos em um caminho semelhante a uma grade. Ela mede a soma das diferenças absolutas entre as coordenadas dos pontos.
@@ -202,6 +190,17 @@ O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado
 - getRecommendations: Gera recomendações de filmes para o usuário-alvo, baseado nos similares. Para cada filme que o usuário-alvo ainda não viu, acumula uma média ponderada das notas dos usuários similares. Peso = 1 / (1 + distância) → mais próximo = maior peso. Retorna uma lista ordenada com os filmes recomendados e suas pontuações estimadas.
 - generateRecommendations: Principal função que é responsavel por lê os usuários a serem recomendados, onde para cada usuário encontra usuários similares (findSimilarUsers), gera as recomendações(getRecommendations) e exibe elas medindo o tempo de execução de cada recomendação e calcula o tempo médio no final.
 
+### Especificações do computador de testes
+
+Os testes do algoritmo foram feitos no seguinte dispositivo:
+
+```
+Modelo: Acer Nitro ANV15-51;
+CPU: 13th Gen Intel® Core™ i5-13420H × 12;
+Memória: 8.0 GiB
+Disco: SSD 512 GB
+Sistema Operacional: Ubuntu 24.04.1 LTS 
+```
 
 ## Autores
 
