@@ -10,7 +10,7 @@
 #include "input_preprocessor.hpp"
 #include "binary_reader.hpp"
 #include "movie_reader.hpp"
-#include "recommender_euclidean.hpp"
+#include "recommender_cosine.hpp"
 
 using namespace std;
 
@@ -75,8 +75,8 @@ int main() {
     std::vector<int> randomUsers = selectRandomUsers(usersAndMovies);
     writeExploreFile(randomUsers);
     
-    RecommenderEuclidean euclideanRec;
-    euclideanRec.generateRecommendations(usersAndMovies, movies);
+    RecommenderCosine recommenderCosine;
+    recommenderCosine.generateRecommendations(usersAndMovies, movies);
 
     return 0;
 }
