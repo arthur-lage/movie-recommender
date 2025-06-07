@@ -4,24 +4,23 @@
 #include <unordered_set>
 #include <string>
 
-using namespace std;
+using user_id_t = int;
+using movie_id_t = int;
 
 struct Rating {
-    int movie;
+    movie_id_t movie;
     float score;
     
-    // Required for unordered_set
     bool operator==(const Rating& other) const {
         return movie == other.movie;
     }
     
-    // Custom hash for Rating
     struct Hash {
         size_t operator()(const Rating& r) const {
-            return hash<int>()(r.movie);
+            return std::hash<int>()(r.movie);
         }
     };
 };
 
-using UsersAndMoviesData = unordered_map<int, unordered_set<Rating, Rating::Hash>>;
-using MoviesData = unordered_map<int, std::string>;
+using MoviesData = std::unordered_map<movie_id_t, std::string>;
+using UsersAndMoviesData = std::unordered_map<user_id_t, std::unordered_set<Rating, Rating::Hash>>;
