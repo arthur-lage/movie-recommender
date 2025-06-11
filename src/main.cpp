@@ -72,8 +72,8 @@ int main() {
     
     // generate random explore.dat
 
-    std::vector<int> randomUsers = selectRandomUsers(usersAndMovies);
-    writeExploreFile(randomUsers);
+    // std::vector<int> randomUsers = selectRandomUsers(usersAndMovies);
+    // writeExploreFile(randomUsers);
     
     RecommenderCosine recommenderCosine;
     recommenderCosine.generateRecommendations(usersAndMovies, movies);

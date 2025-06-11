@@ -23,28 +23,40 @@ constexpr CombinedKey make_key(int user, int movie) {
     return (static_cast<uint64_t>(user) << 32) | static_cast<uint32_t>(movie);
 }
 
+// Parsing otimizado para inteiros
+inline int fast_atoi(const char*& p) {
+    int x = 0;
+    while (*p >= '0' && *p <= '9') {
+        x = x * 10 + (*p - '0');
+        ++p;
+    }
+    return x;
+}
 
-void read_data(ssize_t& read, char* line, size_t& len, FILE* file, unordered_map<int, unordered_set<Rating, Rating::Hash>>& user_data, vector<uint16_t>& movie_counter) {
-    while ((read = getline(&line, &len, file)) != -1) {
-        int user, movie;
-        float score;
-        char* p = line;
-        char* end;
+void read_data(char*& line, size_t& capacity, FILE* file, 
+              std::unordered_map<int, std::unordered_set<Rating, Rating::Hash>>& user_data,
+              std::vector<uint16_t>& movie_counter) {
+    
+    ssize_t read;
+    while ((read = getline(&line, &capacity, file)) != -1) {
+        const char* p = line;
 
-        user = strtoul(p, &end, 10);
-        if (*end != ',') continue;
-        p = end + 1;
+        int user = fast_atoi(p);
+        if (*p != ',') continue;
+        ++p;
+
+        int movie = fast_atoi(p);
+        if (*p != ',') continue;
+        ++p;
+
+        char* endptr;
+        float score = strtof(p, &endptr);
+        if (endptr == p) continue;
+
+        auto& user_ratings = user_data[user];
         
-        movie = strtoul(p, &end, 10);
-        if (*end != ',') continue;
-        p = end + 1;
-        
-        score = strtof(p, &end);
-        if (end == p) continue;
-
-        // Inserir rating único e contar filmes
-        Rating rating{movie, score};
-        if (user_data[user].insert(rating).second) {
+        if (user_ratings.emplace(movie, score).second && 
+            static_cast<size_t>(movie) < movie_counter.size()) {
             movie_counter[movie]++;
         }
     }
@@ -104,7 +116,7 @@ void InputPreprocessor::process_ratings() {
 
     read = getline(&line, &len, file);
     
-    read_data(read, line, len, file, user_data, movie_counter);
+    read_data(line, len, file, user_data, movie_counter);
     write_data_to_output(user_data, movie_counter);
     
     free(line);
