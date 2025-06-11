@@ -11,6 +11,8 @@ struct Rating {
     movie_id_t movie;
     float score;
     
+    Rating(int m, float s) : movie(m), score(s) {}
+
     bool operator==(const Rating& other) const {
         return movie == other.movie;
     }
