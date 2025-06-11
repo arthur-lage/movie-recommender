@@ -1,11 +1,15 @@
 #include "recommender_cosine.hpp"
 #include "config.hpp"
+#include "output_manager.hpp"
+
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 #include <cmath>
 #include <chrono>
+#include <sstream>
 #include <unordered_set>
+#include <vector>
 #include <numeric>  // Para std::accumulate
 
 RecommenderCosine::RecommenderCosine() {}
@@ -49,12 +53,20 @@ double RecommenderCosine::computeCosineSimilarity(user_id_t user1, user_id_t use
 
 void RecommenderCosine::generateRecommendations(const UsersAndMoviesData& usersAndMovies, 
                                               const MoviesData& movies) {
+    OutputManager outputManager;
+    std::vector<uint64_t> genDurations;
+    std::vector<uint64_t> writeDurations;
+
+    outputManager.openInOutcome("output.txt");
+    std::ostringstream buffer;
+    buffer.str().reserve(10000);
+
     // Passo 1: Pré-computar normas
-    auto startPrecompute = std::chrono::high_resolution_clock::now();
+    // auto startPrecompute = std::chrono::high_resolution_clock::now();
     precomputeUserNorms(usersAndMovies);
-    auto normTime = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::high_resolution_clock::now() - startPrecompute);
-    std::cout << "Tempo pré-computação: " << normTime.count() << "ms\n";
+    // auto normTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+    //     std::chrono::high_resolution_clock::now() - startPrecompute);
+    // std::cout << "Tempo pré-computação: " << normTime.count() << "ms\n";
     
     // Passo 2: Ler usuários para recomendar
     std::unordered_set<user_id_t> usersToRecommend;
@@ -111,7 +123,6 @@ void RecommenderCosine::generateRecommendations(const UsersAndMoviesData& usersA
                       [](const auto& a, const auto& b) { return a.second > b.second; });
         }
         
-        // Gerar recomendações
         std::unordered_map<movie_id_t, std::pair<double, double>> predictions;
         const auto& targetRatings = usersAndMovies.at(targetUser);
         
@@ -124,7 +135,6 @@ void RecommenderCosine::generateRecommendations(const UsersAndMoviesData& usersA
             }
         }
         
-        // Converter para lista ordenada
         std::vector<std::pair<movie_id_t, double>> recommendations;
         recommendations.reserve(predictions.size());
         
@@ -134,7 +144,6 @@ void RecommenderCosine::generateRecommendations(const UsersAndMoviesData& usersA
             }
         }
         
-        // Ordenar e selecionar top recomendações
         if (recommendations.size() > maxRecs) {
             std::partial_sort(recommendations.begin(),
                               recommendations.begin() + maxRecs,
@@ -146,33 +155,22 @@ void RecommenderCosine::generateRecommendations(const UsersAndMoviesData& usersA
                       [](const auto& a, const auto& b) { return a.second > b.second; });
         }
         
-        // Calcular tempo de processamento
-        auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-        processingTimes.push_back(duration.count());
-        
-        // Exibir resultados
-        std::cout << "\nUsuário: " << targetUser << " (" << duration.count() << "ms)";
-        std::cout << "\nSimilar users: " << similarUsers.size();
-        std::cout << "\nRecomendações: " << recommendations.size() << "\n";
-        
-        for (int i = 0; i < recommendations.size(); i++) {
-            movie_id_t movieId = recommendations[i].first;
-            auto movieIt = movies.find(movieId);
-            
-            if (movieIt != movies.end()) {
-                std::cout << "  " << (i + 1) << ". " << movieIt->second
-                          << " (" << recommendations[i].second << ")\n";
-            } else {
-                std::cout << "  " << (i + 1) << ". Filme desconhecido (ID: " << movieId << ")\n";
+        buffer << "\n\nRecommendations for user " << targetUser << ":\n\n";
+        for (const auto& [movieId, score] : recommendations) {
+            auto it = movies.find(movieId);
+            if(it != movies.end()) {
+                buffer << it->second << " (Score: " << score << ")\n";
             }
         }
+
+        outputManager.write(buffer.str().c_str(), buffer.str().size());
+        buffer.str("");
     }
     
     if (!processingTimes.empty()) {
         long totalTime = std::accumulate(processingTimes.begin(), processingTimes.end(), 0L);
         double averageTime = static_cast<double>(totalTime) / processingTimes.size();
-        
-        std::cout << "Tempo médio por usuário: " << averageTime << "ms\n";
     }
+
+    outputManager.flush();
 }
