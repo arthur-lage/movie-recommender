@@ -48,17 +48,14 @@ void writeExploreFile(const std::vector<int>& users, const std::string& filename
 }
 
 int main() {
-    InputPreprocessor ratings_file("kaggle-data/ratings.csv", "r");
-
-    cout << "\nGENERATING INPUT.DAT...\n" << endl;
-    
     auto start = chrono::high_resolution_clock::now();
+
+    InputPreprocessor ratings_file("kaggle-data/ratings.csv", "r");
 
     ratings_file.process_ratings();
 
-    auto generateInputDuration = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - start);
+    // auto generateInputDuration = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - start);
 
-    cout << "\nFINISHED GENERATING INPUT.DAT. \n\nTOOK " << generateInputDuration.count() << " MS." << endl;
 
     BinaryReader binary_reader("datasets/input.dat");
     UsersAndMoviesData usersAndMovies;
@@ -77,6 +74,10 @@ int main() {
     
     RecommenderCosine recommenderCosine;
     recommenderCosine.generateRecommendations(usersAndMovies, movies);
+
+    auto progEnd = chrono::high_resolution_clock::now();
+    auto dur = chrono::duration_cast<chrono::milliseconds>(progEnd - start);
+    cout << "Total time: " << dur.count() << " ms" << endl;
 
     return 0;
 }
