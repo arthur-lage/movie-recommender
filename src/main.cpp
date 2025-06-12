@@ -54,23 +54,13 @@ int main() {
 
     ratings_file.process_ratings();
 
-    // auto generateInputDuration = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - start);
-
-
     BinaryReader binary_reader("datasets/input.dat");
     UsersAndMoviesData usersAndMovies;
     binary_reader.process_input(usersAndMovies);
 
-    // read movies
-
     MoviesData movies;
     MovieReader movieReader("kaggle-data/movies.csv", "r");
     movieReader.getMovies(movies);
-    
-    // generate random explore.dat
-
-    // std::vector<int> randomUsers = selectRandomUsers(usersAndMovies);
-    // writeExploreFile(randomUsers);
     
     RecommenderCosine recommenderCosine;
     recommenderCosine.generateRecommendations(usersAndMovies, movies);

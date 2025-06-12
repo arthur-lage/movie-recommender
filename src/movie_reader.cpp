@@ -8,7 +8,7 @@ MovieReader::MovieReader(const char* filename, const char* mode) : FileHandler(f
 
 void MovieReader::getMovies (MoviesData& movies) {
     char buffer[1024];
-    fgets(buffer, sizeof(buffer), file);
+    
 
     while(fgets(buffer, sizeof(buffer), file)) {
         size_t len = strlen(buffer);
