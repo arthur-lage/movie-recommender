@@ -8,7 +8,15 @@ MovieReader::MovieReader(const char* filename, const char* mode) : FileHandler(f
 
 void MovieReader::getMovies (MoviesData& movies) {
     char buffer[1024];
-    
+    if(fgets(buffer, sizeof(buffer), file) == NULL) {
+        if(feof(file)) {
+            printf("Não foi possível ler a lista de filmes corretamente.\n");
+            return;
+        } else {
+            perror("Erro durante a leitura do arquivo de filmes.\n");
+            return;
+        }
+    }
 
     while(fgets(buffer, sizeof(buffer), file)) {
         size_t len = strlen(buffer);
