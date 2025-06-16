@@ -1,6 +1,7 @@
 #pragma once
 
 #include "file_handler.hpp"
+#include "custom_types.hpp"
 
 using namespace std;
 

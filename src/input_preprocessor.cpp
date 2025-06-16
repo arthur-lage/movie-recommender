@@ -15,7 +15,7 @@
 
 using namespace std;
 
-InputPreprocessor::InputPreprocessor(const char* filename, const char* mode) : FileHandler(filename, mode) {}
+InputPreprocessor::InputPreprocessor(const char *filename, const char *mode) : FileHandler(filename, mode) {}
 
 using CombinedKey = uint64_t;
 
@@ -33,10 +33,10 @@ inline int fast_atoi(const char*& p) {
     return x;
 }
 
-void read_data(char*& line, size_t& capacity, FILE* file, 
+void read_data(char*& line, size_t& capacity, FILE* file,
               std::unordered_map<int, std::unordered_set<Rating, Rating::Hash>>& user_data,
               std::vector<uint16_t>& movie_counter) {
-    
+
     ssize_t read;
     while ((read = getline(&line, &capacity, file)) != -1) {
         const char* p = line;
@@ -54,8 +54,8 @@ void read_data(char*& line, size_t& capacity, FILE* file,
         if (endptr == p) continue;
 
         auto& user_ratings = user_data[user];
-        
-        if (user_ratings.emplace(movie, score).second && 
+
+        if (user_ratings.emplace(movie, score).second &&
             static_cast<size_t>(movie) < movie_counter.size()) {
             movie_counter[movie]++;
         }
@@ -98,7 +98,6 @@ void write_data_to_output(unordered_map<int, unordered_set<Rating, Rating::Hash>
         offset += pos;
     }
 
-
     fwrite(buffer, 1, offset, output_file);
     fclose(output_file);
 }
@@ -115,9 +114,9 @@ void InputPreprocessor::process_ratings() {
     ssize_t read;
 
     read = getline(&line, &len, file);
-    
+
     read_data(line, len, file, user_data, movie_counter);
     write_data_to_output(user_data, movie_counter);
-    
+
     free(line);
 }
