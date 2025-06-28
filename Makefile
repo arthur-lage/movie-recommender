@@ -1,6 +1,6 @@
 CXX      := g++                 
 # CXXFLAGS := -Wall -Wextra -Werror -O3
-CXXFLAGS := -O3 
+CXXFLAGS := -O3 -march=native -flto -funroll-loops -fopenmp -mavx2
 LDFLAGS  := -lm                 
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects

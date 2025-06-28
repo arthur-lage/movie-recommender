@@ -57,21 +57,33 @@ int main() {
 
     auto ppE = chrono::high_resolution_clock::now();
 
-
-
     auto umrS = chrono::high_resolution_clock::now();
 
     BinaryReader binary_reader("datasets/input.dat");
     UsersAndMoviesData usersAndMovies;
     binary_reader.process_input(usersAndMovies);
 
-    auto umrE = chrono::high_resolution_clock::now();
+    // SHOW USERS AND MOVIES
 
+    // for(auto el : usersAndMovies) {
+    //     cout << "ID: " << el.first << endl;
+    //     for (auto mv : el.second) {
+    //         cout << "Movie: " << mv.movie << ", Score: " << mv.score << endl;
+    //     }
+    // }
+    
+    auto umrE = chrono::high_resolution_clock::now();
 
     auto rmS = chrono::high_resolution_clock::now();
     MoviesData movies;
     MovieReader movieReader("kaggle-data/movies.csv", "r");
     movieReader.getMovies(movies);
+
+//  for(auto el : movies) {
+//         cout << "ID: " << el.first << ", Nome: " << el.second << endl;
+        
+//     }
+
     auto rmE = chrono::high_resolution_clock::now();
 
 

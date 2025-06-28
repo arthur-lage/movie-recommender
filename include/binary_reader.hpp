@@ -11,5 +11,4 @@ class BinaryReader : public FileHandler {
     public:
         BinaryReader(const char* filename);
         void process_input(UsersAndMoviesData& usersAndMovies);
-        void process_explore(unordered_set<int> usersToRecommend);
 };
