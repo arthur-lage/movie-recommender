@@ -140,8 +140,6 @@ Onde:
  - A∩B = elementos em comum entre A e B;
  - A∪B= todos os elementos únicos de A e B juntos.
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
-
 #### Funcionamento
 
  1° Comparação entre usuários:
