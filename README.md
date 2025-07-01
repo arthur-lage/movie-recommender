@@ -221,8 +221,8 @@ Sistema Operacional: Ubuntu 24.04.1 LTS
 Além disso, foram utilizadas as ferramentas:
 
 ```
-G++ (Compilador C++): Versão
-Makefile: Versão
+G++ (Compilador C++): gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04)
+Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
 ```
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
