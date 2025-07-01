@@ -230,7 +230,7 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
 ## ✉️ Contato
 
 <div align="center">
-    <strong>Arthur Lage - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<strong>
+    <em>Arthur Lage - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<em>
     <br/>
     <br/>
     <a href="mailto:arthurlage2006@gmail.com">
@@ -248,7 +248,7 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
 </div>
 <br>
 <div align="center">
-    <strong>Danniel Holanda - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<strong>
+    <em>Danniel Holanda - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<em>
     <br/>
     <br/>
     <a href="mailto:dannielvh7@gmail.com">
@@ -266,7 +266,7 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
 </div>
 <br>
 <div align="center">
-    <strong>Jade Giulia - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<strong>
+    <em>Jade Giulia - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<em>
     <br/>
     <br/>
     <a href="mailto:jadegiulia3817@gmail.com">
@@ -284,7 +284,7 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
 </div>
 <br>
 <div align="center">
-    <strong>Luiza Magalhães - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<strong>
+    <em>Luiza Magalhães - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<em>
     <br/>
     <br/>
     <a href="mailto:magalhaesmirandalu@gmail.com">
@@ -302,7 +302,7 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
 </div>
 <br>
 <div align="center">
-    <strong>William Leão - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<strong>
+    <em>William Leão - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<em>
     <br/>
     <br/>
     <a href="mailto:wdsbleao@gmail.com">
