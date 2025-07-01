@@ -209,7 +209,49 @@ O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
-### 🧪 Ambiente de Testes
+## 📂 Estrutura do Projeto
+
+```bash
+projeto-recomendacao/
+│
+├── datasets/
+│   └── explore.dat # Arquivo que possui a lista de usuários que receberão recomendação
+│   └── input.dat # Arquivo gerado após o pré-processamento dos dados
+│
+├── imgs/ # Pasta com as imagens utilizadas no readme
+│   ├── formula_euclidean_example.png
+│   ├── pearson.png
+│   ├── pearsonFormula.png
+│   ├── tablelajaccard.jpg
+│   └── table_euclidean_example.png
+│
+├── src/ # Pasta com os códigos fontes do projeto
+│   ├── binary_reader.cpp
+│   ├── file_handler.cpp
+│   ├── input_preprocessor.cpp
+│   ├── main.cpp
+│   ├── movie_reader.cpp
+│   ├── output_manager.cpp
+│   └── recommender_cosine.cpp
+│
+├── include/ # Pasta com os códigos de cabeçalho do projeto
+│   ├── binary_reader.hpp
+│   ├── config.hpp
+│   ├── custom_types.hpp
+│   ├── file_handler.hpp
+│   └── input_preprocessor.hpp
+│
+├── .gitignore
+├── Makefile
+├── README.md
+└── pratica.pdf
+```
+
+## ⚙️ Fluxo do Programa
+
+
+
+## 🧪 Ambiente de Testes
 
 Os testes do algoritmo foram feitos no seguinte dispositivo:
 
@@ -229,6 +271,71 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
 ```
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+
+## ⬇️ Instruções de Uso
+
+Instruções para baixar e executar o projeto em um ambiente Ubuntu:
+
+- 1. Dependências do projeto
+
+```bash
+# Primeiro, é recomendado atualizar os pacotes do sistema
+sudo apt update -y
+sudo apt upgrade -y
+
+# Em seguida, instale as ferramentas de compilação
+sudo apt install build-essential
+
+# Se necessário, instale o make separadamente
+sudo apt install make
+
+# Caso não esteja instalado, baixe o git
+sudo apt install git
+```
+
+- 2. Baixando o projeto
+
+```bash
+# Primeiro, clone o projeto para baixá-lo para a sua máquina e entre na pasta do projeto
+git clone https://github.com/arthur-lage/movie-recommender.git
+cd movie-recommender
+```
+
+- 3. Adicione os arquivos necessários ao projeto:
+
+Dentro do projeto, crie uma pasta chamada "kaggle-data"
+Após baixar a ![Base De Dados](https://www.kaggle.com/datasets/garymk/movielens-25m-dataset) nesse link, extraia o arquivo baixado.
+Selecione os arquivos "movies.csv" e "ratings.csv" e copie-os para a pasta "kaggle-data".
+
+- 4. Executando o projeto
+
+```bash
+# Utilize os comandos a seguir na ordem para compilar o projeto:
+
+# Deleta os arquivos e pastas gerados na compilação
+make clean
+
+# Compila o projeto
+make build
+
+# Roda o projeto
+make run
+
+
+# OU
+
+
+# Utilize o comando a seguir para executar os passos anteriores automaticamente:
+make all
+```
+
+- 5. Resultado
+
+O resultado das recomendações serão gerados no caminho: 
+
+```bash
+outcome/output.txt
+```
 
 ## ✉️ Contato
 
