@@ -20,13 +20,13 @@ Além disso, no arquivo "datasets/explore.dat" deve estar definido, em cada linh
 
 As instruções mais detalhadas podem ser encontradas na seção <a href="#️-instruções-de-uso">Instruções de Uso</a>
 
-## Introdução
+## 🔭 Introdução
 
 Esse projeto foi desenvolvido como trabalho final da disciplina de Algoritmos e Estruturas de Dados I, ministrada por Michel Pires, do curso de Engenharia de Computação do CEFET-MG (Campus Divinópolis). O objetivo desse trabalho é gerar recomendações de filmes para usuários específicos com base numa base de dados de filmes pública, que possui mais de 25 milhões de registros, contendo identificadores para os usuários e filmes, suas avaliações e o momento em que o registro foi feito. O trabalho foi desenvolvido utilizando as linguagens C e C++, com o grupo sendo composto por 5 pessoas.
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
-## Metodologia
+## 📝 Metodologia
 
 Nesta etapa da documentação, explicaremos a linha de raciocínio utilizada para pensar as funcionalidades e decisões desse programa.
 
@@ -211,10 +211,26 @@ O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
+### ⏳️ Otimizações
+
+As principais otimizações que melhoraram o tempo de execução e o uso de memória do programa.
+
+## ⚙️ Fluxo do Programa
+
+<img src="/imgs/fluxograma.jpeg">
+
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+
+## 📚️ Bibliotecas
+
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+
 ## 📂 Estrutura do Projeto
 
+Para esse projeto, utilizamos a seguinte estrutura
+
 ```bash
-projeto-recomendacao/
+movie-recommender/
 │
 ├── datasets/
 │   └── explore.dat # Arquivo que possui a lista de usuários que receberão recomendação
@@ -249,9 +265,11 @@ projeto-recomendacao/
 └── pratica.pdf
 ```
 
-## ⚙️ Fluxo do Programa
+## Classes, funções e configurações
 
+Uma descrição sobre as partes essenciais do programa:
 
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
 ## 🧪 Ambiente de Testes
 
@@ -273,6 +291,8 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
 ```
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+
+## 🏁 Conclusão
 
 ## ⬇️ Instruções de Uso
 
