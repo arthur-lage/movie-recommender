@@ -251,15 +251,15 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
     <strong>Danniel Holanda - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<strong>
     <br/>
     <br/>
-    <a href="mailto:arthurlage2006@gmail.com">
+    <a href="mailto:dannielvh7@gmail.com">
         <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white"/>
     </a>
     &nbsp;
-    <a href="https://linkedin.com/arthur-lage">
+    <a href="https://www.linkedin.com/in/arthur-lage/">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
     &nbsp;
-    <a href="https://github.com/arthur-lage">
+    <a href="https://github.com/dannielvh">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
     <br/>
@@ -273,11 +273,11 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
         <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white"/>
     </a>
     &nbsp;
-    <a href="https://linkedin.com/arthur-lage">
+    <a href="https://www.linkedin.com/in/jade-souza-352a21333">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
     &nbsp;
-    <a href="https://github.com/arthur-lage">
+    <a href="https://github.com/Jade-Souza">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
     <br/>
@@ -287,7 +287,7 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
     <strong>Luiza Magalhães - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<strong>
     <br/>
     <br/>
-    <a href="mailto:arthurlage2006@gmail.com">
+    <a href="mailto:magalhaesmirandalu@gmail.com">
         <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white"/>
     </a>
     &nbsp;
@@ -295,7 +295,7 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
     &nbsp;
-    <a href="https://github.com/arthur-lage">
+    <a href="https://github.com/Lulu-blue">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
     <br/>
@@ -313,7 +313,7 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
     &nbsp;
-    <a href="https://github.com/arthur-lage">
+    <a href="https://github.com/WilliamDLeao">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
     <br/>
