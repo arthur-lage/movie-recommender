@@ -14,6 +14,27 @@
 
 Para rodar o programa, é necessário ter os arquivos "ratings.csv" e "movies.csv" dentro de uma pasta chamada "kaggle-data", que fica localizada na raiz do projeto. Devido aos limites de armazenamento do GitHub, esses arquivos devem ser baixados separadamente pelo link abaixo:
 
+## 📑 Sumário
+
+- [⚠️ IMPORTANTE!](#️-importante)
+- [🔭 Introdução](#-introdução)
+- [📝 Metodologia](#-metodologia)
+  - [Pré-processamento](#pré-processamento)
+  - [Constantes](#constantes)
+  - [Métodos de recomendação](#métodos-de-recomendação)
+    - [Distância Euclidiana](#distância-euclidiana)
+    - [Correlação de Pearson](#correlação-de-pearson)
+    - [Jaccard](#jaccard)
+    - [Manhattan](#manhattan)
+- [⏳️ Otimizações](#️-otimizações)
+- [⚙️ Fluxo do Programa](#️-fluxo-do-programa)
+- [📚️ Bibliotecas](#️-bibliotecas)
+- [📂 Estrutura do Projeto](#-estrutura-do-projeto)
+- [🧪 Ambiente de Testes](#-ambiente-de-testes)
+- [🏁 Conclusão](#-conclusão)
+- [⬇️ Instruções de Uso](#️-instruções-de-uso)
+- [✉️ Contato](#️-contato)
+
 ![Base De Dados](https://www.kaggle.com/datasets/garymk/movielens-25m-dataset)
 
 Além disso, no arquivo "datasets/explore.dat" deve estar definido, em cada linha, o id do usuário que receberá as recomendações de filmes.
