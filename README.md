@@ -303,8 +303,10 @@ cd movie-recommender
 
 - 3. Adicione os arquivos necessários ao projeto:
 
-Dentro do projeto, crie uma pasta chamada "kaggle-data"
+Dentro do projeto, crie uma pasta chamada "kaggle-data".
+
 Após baixar a ![Base De Dados](https://www.kaggle.com/datasets/garymk/movielens-25m-dataset) nesse link, extraia o arquivo baixado.
+
 Selecione os arquivos "movies.csv" e "ratings.csv" e copie-os para a pasta "kaggle-data".
 
 - 4. Executando o projeto
