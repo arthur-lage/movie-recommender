@@ -10,10 +10,13 @@
     <img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white"/>
 </div>
 
-## IMPORTANTE!
+## ⚠️ IMPORTANTE!
 
-Para rodar o programa, é preciso ter os arquivos movies.csv e ratings.csv dentro da pasta kaggle-data. É necessário baixar esses arquivos disponíveis no link do PDF do trabalho.
-Além disso, no arquivo "datasets/explore.dat" devem estar definido em cada linha, o id do usuário que receberá recomendações.
+Para rodar o programa, é necessário ter os arquivos "ratings.csv" e "movies.csv" dentro de uma pasta chamada "kaggle-data", que fica localizada na raiz do projeto. Devido aos limites de armazenamento do GitHub, esses arquivos devem ser baixados separadamente pelo link abaixo:
+
+![Base De Dados](https://www.kaggle.com/datasets/garymk/movielens-25m-dataset)
+
+Além disso, no arquivo "datasets/explore.dat" deve estar definido, em cada linha, o id do usuário que receberá as recomendações de filmes.
 
 ## Introdução
 
@@ -255,7 +258,7 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
         <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white"/>
     </a>
     &nbsp;
-    <a href="https://www.linkedin.com/in/arthur-lage/">
+    <a href="https://www.linkedin.com/in/danniel-vieira-81861a334/">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
     &nbsp;
