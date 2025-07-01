@@ -7,6 +7,7 @@
     <img src="https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white"/>
     <img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black"/>
     <img src="https://img.shields.io/badge/GIT-E44C30?style=for-the-badge&logo=git&logoColor=white"/>
+    <img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white"/>
 </div>
 
 ## IMPORTANTE!
@@ -17,6 +18,8 @@ Além disso, no arquivo "datasets/explore.dat" devem estar definido em cada linh
 ## Introdução
 
 Esse projeto foi desenvolvido como trabalho final da disciplina de Algoritmos e Estruturas de Dados I, ministrada por Michel Pires, do curso de Engenharia de Computação do CEFET-MG (Campus Divinópolis). O objetivo desse trabalho é gerar recomendações de filmes para usuários específicos com base numa base de dados de filmes pública, que possui mais de 25 milhões de registros, contendo identificadores para os usuários e filmes, suas avaliações e o momento em que o registro foi feito. O trabalho foi desenvolvido utilizando as linguagens C e C++, com o grupo sendo composto por 5 pessoas.
+
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
 ## Metodologia
 
@@ -40,6 +43,8 @@ Outra mudança importante foi substituir os vetores por estruturas que permitiss
 
 [Versão atual dessa função](https://github.com/arthur-lage/movie-recommender/blob/2d7e87200a712fd513e8bd70e9829c681560a816/src/input_preprocessor.cpp#L43)
 
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+
 ### Constantes
 
 Descrição das constantes definidas no arquivo [config.hpp](https://github.com/arthur-lage/movie-recommender/blob/2d7e87200a712fd513e8bd70e9829c681560a816/include/config.hpp#L1C1-L6C51)
@@ -56,6 +61,8 @@ A primeira constante define a quantidade mínima de avaliações que um usuário
 A segunda constante define a quantidade mínima de avaliações que um filme deve possuir para ser incluído no "input.dat".
 
 A terceira constante define a quantidade de recomendações que cada usuário irá receber.
+
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
 ## Métodos de recomendação
 
@@ -99,6 +106,8 @@ Para gerar recomendações para o usuário 1:
 
 Média de tempo para gerar recomendações para um usuário com esse método (10 testes para os mesmos usuários aleatórios): 330.28 milisegundos.
 
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+
 ### Correlação de Pearson
 
 Retorno: entre -1 e 1. Quanto mais perto de 0 pior(mais desperso). Quanto mais próximo de 1 ou -1, melhor (mais concentrado).
@@ -115,6 +124,8 @@ Como funciona o cálculo: raiz da soma dos produtos dos desvios dividida pelo pr
 <img src="imgs/pearsonFormula.png"><img> <br>
 TEMPO: Person levou em média 617,6 ms para gerar 1 recomendação
 
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+
 ### Jaccard
 
 A Similaridade de Jaccard é uma medida estatística que calcula a similaridade entre dois conjuntos, com base na interseção e na união desses conjuntos. Essa métrica é definida como o tamanho da interseção dividido pelo tamanho da união dos conjuntos. Em outras palavras, a Similaridade de Jaccard mede a proporção de elementos comuns entre os conjuntos em relação ao total de elementos presentes nos conjuntos.
@@ -129,6 +140,7 @@ Onde:
  - A∩B = elementos em comum entre A e B;
  - A∪B= todos os elementos únicos de A e B juntos.
 
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
 #### Funcionamento
 
@@ -162,6 +174,8 @@ Processamento para o Usuário 1
   - Filmes do Usuário 3 não vistos pelo Usuário 1: {121, 212}
   - Como só tem um usuário similar (Usuário 3), ambos os filmes são recomendados com peso 1.
 
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+
 ### Manhattan
 
 A distância de Manhattan é uma métrica usada para determinar a distância entre dois pontos em um caminho semelhante a uma grade. Ela mede a soma das diferenças absolutas entre as coordenadas dos pontos.
@@ -180,6 +194,8 @@ Diferentemente da distância de cosseno, que não satisfaz a desigualdade triang
 - Em algoritmos de otimização, a desigualdade triangular pode ser usada para eliminar espaços de pesquisa com eficiência.
 - Em estruturas de dados como árvores métricas, essas propriedades permitem pesquisas mais rápidas do vizinho mais próximo.
 - No machine learning, os algoritmos que se baseiam em métricas de distância (como k-nearest neighbors) podem aproveitar essas propriedades para obter garantias teóricas e implementações eficientes.
+
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
   
 #### Como código está implementado
 
@@ -190,7 +206,9 @@ O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado
 - getRecommendations: Gera recomendações de filmes para o usuário-alvo, baseado nos similares. Para cada filme que o usuário-alvo ainda não viu, acumula uma média ponderada das notas dos usuários similares. Peso = 1 / (1 + distância) → mais próximo = maior peso. Retorna uma lista ordenada com os filmes recomendados e suas pontuações estimadas.
 - generateRecommendations: Principal função que é responsavel por lê os usuários a serem recomendados, onde para cada usuário encontra usuários similares (findSimilarUsers), gera as recomendações(getRecommendations) e exibe elas medindo o tempo de execução de cada recomendação e calcula o tempo médio no final.
 
-### Especificações do computador de testes
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+
+### 🧪 Ambiente de Testes
 
 Os testes do algoritmo foram feitos no seguinte dispositivo:
 
@@ -202,60 +220,122 @@ Disco: SSD 512 GB
 Sistema Operacional: Ubuntu 24.04.1 LTS 
 ```
 
-## Autores
+Além disso, foram utilizadas as ferramentas:
 
-<div>
-    <strong>Arthur Lage<strong>
+```
+G++ (Compilador C++): Versão
+Makefile: Versão
+```
+
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+
+## ✉️ Contato
+
+<div align="center">
+    <strong>Arthur Lage - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<strong>
     <br/>
+    <br/>
+    <a href="mailto:arthurlage2006@gmail.com">
+        <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white"/>
+    </a>
+    &nbsp;
     <a href="https://linkedin.com/arthur-lage">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
+    &nbsp;
     <a href="https://github.com/arthur-lage">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
+    <br/>
 </div>
 <br>
-<div>
-    <strong>Danniel Holanda<strong>
+<div align="center">
+    <strong>Danniel Holanda - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<strong>
     <br/>
+    <br/>
+    <a href="mailto:arthurlage2006@gmail.com">
+        <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white"/>
+    </a>
+    &nbsp;
     <a href="https://linkedin.com/arthur-lage">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
+    &nbsp;
     <a href="https://github.com/arthur-lage">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
+    <br/>
 </div>
 <br>
-<div>
-    <strong>Jade Giulia<strong>
+<div align="center">
+    <strong>Jade Giulia - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<strong>
     <br/>
+    <br/>
+    <a href="mailto:jadegiulia3817@gmail.com">
+        <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white"/>
+    </a>
+    &nbsp;
     <a href="https://linkedin.com/arthur-lage">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
+    &nbsp;
     <a href="https://github.com/arthur-lage">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
+    <br/>
 </div>
 <br>
-<div>
-    <strong>Luiza Magalhães<strong>
+<div align="center">
+    <strong>Luiza Magalhães - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<strong>
     <br/>
+    <br/>
+    <a href="mailto:arthurlage2006@gmail.com">
+        <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white"/>
+    </a>
+    &nbsp;
     <a href="https://linkedin.com/arthur-lage">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
+    &nbsp;
     <a href="https://github.com/arthur-lage">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
+    <br/>
 </div>
 <br>
-<div>
-    <strong>William Leão<strong>
+<div align="center">
+    <strong>William Leão - Graduando - 3º Período de Engenharia de Computação - CEFET-MG<strong>
     <br/>
+    <br/>
+    <a href="mailto:wdsbleao@gmail.com">
+        <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white"/>
+    </a>
+    &nbsp;
     <a href="https://linkedin.com/arthur-lage">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
+    &nbsp;
     <a href="https://github.com/arthur-lage">
         <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/>
     </a>
+    <br/>
 </div>
 <br>
+
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+
+## 📜 Referências
+
+[^1]: A. A. Veloso, "Classificação associativa sob demanda," Ph.D. dissertação, Departamento de Ciência da Computação, Universidade Federal de Minas Gerais, Belo Horizonte, Brasil, 2009.
+
+[^2]: R. Cattral and F. Oppacher, *Poker Hand*, UCI Machine Learning Repository, 2007. [Online]. Available: https://doi.org/10.24432/C5KW38.
+
+[^3]: Microsoft, "pair structure," Microsoft Learn, 2024. [Online]. Available: https://learn.microsoft.com/pt-br/cpp/standard-library/pair-structure?view=msvc-170. [Accessed: Aug. 30, 2024].
+
+[^4]: Microsoft, "unordered_map class," Microsoft Learn, [Online]. Available: https://learn.microsoft.com/pt-br/cpp/standard-library/unordered-map-class?view=msvc-170. [Accessed: Aug. 30, 2024].
+
+[^5]: Microsoft, "vector class," Microsoft Learn, [Online]. Available: https://learn.microsoft.com/pt-br/cpp/standard-library/vector-class?view=msvc-170. [Accessed: Aug. 30, 2024].
+
+[^6]: L. He, Z. Gao, Q. Liu, e Z. Yang, "An Improved Grid Search Algorithm for Parameters Optimization on SVM," Applied Mechanics and Materials, vol. 644-650, pp. 2216-2221, 2014. DOI: 10.4028/www.scientific.net/AMM.644-650.2216.
+
+[^7]: "unordered_set Class | Microsoft Learn," Microsoft, [Online]. Available: https://learn.microsoft.com/pt-br/cpp/standard-library/unordered-set-class?view=msvc-170. [Accessed: 29-Aug-2024].
