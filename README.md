@@ -43,7 +43,15 @@ As instruções mais detalhadas podem ser encontradas na seção <a href="#️-i
 
 ## 🔭 Introdução
 
-Esse projeto foi desenvolvido como trabalho final da disciplina de Algoritmos e Estruturas de Dados I, ministrada por Michel Pires, do curso de Engenharia de Computação do CEFET-MG (Campus Divinópolis). O objetivo desse trabalho é gerar recomendações de filmes para usuários específicos com base numa base de dados de filmes pública, que possui mais de 25 milhões de registros, contendo identificadores para os usuários e filmes, suas avaliações e o momento em que o registro foi feito. O trabalho foi desenvolvido utilizando as linguagens C e C++, com o grupo sendo composto por 5 pessoas.
+Esse projeto foi desenvolvido como trabalho final da disciplina de Algoritmos e Estruturas de Dados I, ministrada por Michel Pires, do curso de Engenharia de Computação do CEFET-MG (Campus Divinópolis). O objetivo desse trabalho é gerar recomendações de filmes para usuários específicos com base numa base de dados de filmes pública, que possui mais de 25 milhões de registros, contendo identificadores para os usuários e filmes, suas avaliações e o momento em que o registro foi feito.
+
+Nesse estudo, foi utilizada a base de dados gratuita "MovieLens 25M", que disponibiliza dados das avaliações de mais de 160 mil usuários em mais de 62 mil filmes. Esses dados foram coletados pelo serviço MovieLens entre 1995 e 2019, tendo o conjunto de dados gerado em 21 de novembro de 2019. Os arquivos usados no desenvolvimento dessa aplicação foram: 
+
+- "ratings.csv": Arquivo que contém as avaliações dos usuários sobre determinado filme, tendo em cada linha o id do usuário, o id do filme, a nota do usuário nesse filme e o momento em que o registro foi feito (timestamp). O timestamp não foi incluido nesse estudo, já que não apresenta relevância na hora de recomendar os filmes para os usuários.
+
+- "movies.csv": Arquivo que traz informações sobre os filmes, como: id do filme no banco de dados, nome do filme e os gêneros dele.
+
+Dessa maneira, a partir dos dados fornecidos pelo serviço e por meio da similaridade de cossenos, que permite relacionar as avaliações para encontrar usuários semelhantes de forma rápida, foi construido esse algoritmo de recomendação de filmes. Os detalhes de implementação e execução serão detalhados ao longo dessa documentação.
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
@@ -234,7 +242,26 @@ O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado
 
 ### ⏳️ Otimizações
 
-As principais otimizações que melhoraram o tempo de execução e o uso de memória do programa.
+Como o desempenho do programa foi um dos critérios mais relevantes na avaliação do trabalho, tornou-se essencial otimizar o máximo possível o programa.
+Nesta seção, descreveremos os pontos chaves que levaram o tempo de execução médio do programa de quase 100 segundos para 3 segundos, uma redução de 97%, ou um ganho de performance de 32 vezes.
+
+#### Substituição de funções do C++ pelas de C
+
+Devido ao overhead de algumas das funcionalidades do C++, foi possível notar uma grande perda de desempenho quando utilizados: ```std::string, std::ofstream, std::ifstream, std::getline()```. Essas estruturas e funções, por implementarem muitas verificações e recursos que não foram utilizadas em nosso projeto, causaram uma redução na performance do programa, já que o processador precisa executar mais operações, que nesse caso não trazem benefícios.
+
+Por isso, decidimos implementar as leituras e escritas de arquivo em C, usando ```FILE*, char*, fopen(), fread(), fwrite(), strtok(), strchr()```, que trouxeram uma melhora significativa no tempo de pré-processamento de dados.
+
+#### Bufferização na leitura e escrita de arquivo
+
+Ao invés de ler os dados um por um ou escrever cada dado separadamente no arquivo pré-processado ou de recomendações, decidimos utilizar a bufferização desses dados. Essa prática consiste em acumular os dados num buffer (uma varíavel) de um determinado tamanho, e quando esse tamanho é atingido, o programa realiza o processamento ou a escrita esses dados. Essa abordagem traz benefícios para performance, uma vez que as operações de I/O (entrada e saída) em disco custam caro para o processador, e executá-las para dezenas de milhares de dados obrigam o computador a fazer muitos acessos ao disco. Usando a bufferização, é possível reduzir bastante a quantidade de operações, diminuindo consideravelmente o tempo gasto para ler e escrever os arquivos.
+
+#### Paralelização (Multithreading)
+
+O uso de multithreading permite que o programa realize múltiplas tarefas ao mesmo tempo, de forma a aproveitar melhor os recursos do processador. Essa estratégia faz com que o programa separe as tarefas para núcleos diferentes do processador, tornando assim possível que essas sejam feitas simultâneamente. Isso foi de extrema importância para o cálculo das recomendações, umas vez que, sem o uso de paralelismo, o programa demorava em média 8 segundos para gerar as recomendações de 50 usuários. Porém, com a implementação dessa técnica, foi possível reduzir esse tempo para menos de 1800ms, já que partes diferentes do processador ficam responsáveis pelos cálculos, ao invés do programa executar linearmente cada um deles.
+
+#### Recriar funções de conversão de string para int ou float
+
+Outra medida que ajudou a reduzir bastante o tempo de execução do projeto foi criar novas funções que possibilitassem a conversão mais rápida de dados. As funçoes ```atoi(), atof()``` do C fazem a conversão de strings para inteiros e decimais, respectivamente. Entretanto, essas funções fazem muitas operações além da conversão de dados, o que desacelera o processo. Assim, recriando essa funções para fazer as conversões de forma mais simples, as quais podem ser encontradas em XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX, foi possível obter um grande aumento de desempenho, reduzindo o tempo de pré-processamento de 4500ms em média para 1000ms. Além disso, essa decisão ajudou a reduzir em cerca de 200ms o tempo de leitura e processamento do arquivo "input.dat".
 
 ## ⚙️ Fluxo do Programa
 
