@@ -4,9 +4,9 @@
 #include <unordered_map>
 #include <vector>
 
-class RecommenderCosine {
+class Recommender {
 public:
-    RecommenderCosine();
+    Recommender();
     void generateRecommendations(const UsersAndMoviesData& usersAndMovies, 
                                const MoviesData& movies);
     
