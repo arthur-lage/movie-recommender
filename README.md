@@ -26,20 +26,22 @@ As instruções mais detalhadas podem ser encontradas na seção <a href="#️-i
 - [🔭 Introdução](#-introdução)
 - [📝 Metodologia](#-metodologia)
   - [Pré-processamento](#pré-processamento)
-  - [Constantes](#constantes)
   - [Métodos de recomendação](#métodos-de-recomendação)
     - [Distância Euclidiana](#distância-euclidiana)
     - [Correlação de Pearson](#correlação-de-pearson)
     - [Jaccard](#jaccard)
     - [Manhattan](#manhattan)
+    - [Cosseno](#similaridade-de-cosseno)
 - [⏳️ Otimizações](#️-otimizações)
 - [⚙️ Fluxo do Programa](#️-fluxo-do-programa)
 - [📚️ Bibliotecas](#️-bibliotecas)
 - [📂 Estrutura do Projeto](#-estrutura-do-projeto)
+- [💻️ Classes, funções e configurações](#️-classes-funções-e-configurações)
 - [🧪 Ambiente de Testes](#-ambiente-de-testes)
 - [🏁 Conclusão](#-conclusão)
 - [⬇️ Instruções de Uso](#️-instruções-de-uso)
 - [✉️ Contato](#️-contato)
+- [📜 Referências](#-referências)
 
 ## 🔭 Introdução
 
@@ -61,7 +63,9 @@ Nesta etapa da documentação, explicaremos a linha de raciocínio utilizada par
 
 ### Pré-processamento
 
-Para essa primeira parte, tentei primeiro fazer uma leitura mais simples utilizando ```std::ifstream, std::getline, std::vector```, sem visar o desempenho do programa. Com essa abordagem inicial, foi possível obter um resultado médio de 75-80 segundos para pré-processar o dados do arquivo ratings.csv.
+#### Primeira abordagem
+
+Para essa primeira parte, tentamos primeiro fazer uma leitura mais simples utilizando ```std::ifstream, std::getline, std::vector```, sem visar o desempenho do programa. Com essa abordagem inicial, foi possível obter um resultado médio de 75-80 segundos para pré-processar o dados do arquivo `ratings.csv`.
 
 [Uma versão anterior da função que lida com esses dados pode ser encontrada nesse link](https://github.com/arthur-lage/movie-recommender/commit/303c64bf38c0b991bd4b02f4f14d6b8a00441137#diff-a6be4517d1cc29d972f91468e0137d1ba8455764b0176ff894a05fd4b4e07935R39-L41)
 
@@ -72,33 +76,37 @@ Entretanto, essa abordagem, por ler o arquivo mais de uma vez, e salvar os dados
 
 Por isso, decidimos tentar de outra maneira, com o objetivo de tornar o programa mais rápido.
 
+#### Segunda abordagem
+
 Assim, ao invés de usar ifstream, usamos agora o FILE* da linguagem C, que apesar de ter uma implementação menos simples, permite com que lidemos com o arquivo de forma bem mais rápida. Além disso, utilizamos vetores de char ao invés de strings, e funções do C, como strlen, strtol, strtof, que tem um desempenho bem maior que as funções de string do C++.
+
 Outra mudança importante foi substituir os vetores por estruturas que permitissem acesso mais rápido, como unordered_map e unordered_set, além de facilitarem a verificação de que os seus registros são únicos.
 
-[Versão atual dessa função](https://github.com/arthur-lage/movie-recommender/blob/2d7e87200a712fd513e8bd70e9829c681560a816/src/input_preprocessor.cpp#L43)
+[Versão dessa função](https://github.com/arthur-lage/movie-recommender/blob/2d7e87200a712fd513e8bd70e9829c681560a816/src/input_preprocessor.cpp#L43)
+
+#### Abordagem final
+
+Com o fito de obter a melhor performance possível, fizemos algumas substituições principais nessa parte do programa:
+
+- 1. Uso de funções customizadas para conversão de strings para int e float, que permite uma transformação mais rápida com menos overhead.
+
+- 2. Reservar uma quantidade suficiente de memória para armazenar todos os usuários e filmes, evitando que o programa precise gastar tempo realocando memória
+
+- 3. Leitura e escrita com buffer, para ao invés de ler uma linha por vez, efetuar uma leitura em blocos, diminuindo as operações de acesso em disco que demandam mais tempo.
+
+- 4. Usar estruturas para salvar e comparar dados para fazer os filtros, para evitar percorrer o arquivo mais de uma vez
+
+- 5. Alinhamento da memória [Linha 150](https://github.com/arthur-lage/movie-recommender/blob/f878c0861f5f62adb5a1959ee6716943b371a155/src/data_preprocessor.cpp#L150): Os novos processadores conseguem operar memória de forma mais eficiente quando os dados estão alinhados, e por isso, a falta de alinhamento no acesso pode causar penalidades na performance. Por isso é feito um ajuste de 64 bytes.
+
+[Versão final do código](https://github.com/arthur-lage/movie-recommender/blob/f878c0861f5f62adb5a1959ee6716943b371a155/src/data_preprocessor.cpp#L18)
+
+### Processamento do Input
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
-### Constantes
-
-Descrição das constantes definidas no arquivo [config.hpp](https://github.com/arthur-lage/movie-recommender/blob/2d7e87200a712fd513e8bd70e9829c681560a816/include/config.hpp#L1C1-L6C51)
-
-```c
-const int MININUM_REVIEW_COUNT_PER_USER = 50;
-const int MININUM_REVIEW_COUNT_PER_MOVIE = 50;
-
-const int NUMBER_OF_RECOMMENDATIONS_PER_USER = 10;
-```
-
-A primeira constante define a quantidade mínima de avaliações que um usuário deve fazer para que ele seja incluído no "input.dat".
-
-A segunda constante define a quantidade mínima de avaliações que um filme deve possuir para ser incluído no "input.dat".
-
-A terceira constante define a quantidade de recomendações que cada usuário irá receber.
-
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
-## Métodos de recomendação
+### Métodos de recomendação
 
 Para esse projeto, testamos diferentes métodos de gerar recomendações, com o objetivo de encontrar um que possuísse melhor desempenho para o programa.
 Foram testadas as seguintes estratégias:
@@ -111,7 +119,7 @@ Foram testadas as seguintes estratégias:
 
 Abaixo está uma breve descrição sobre esses métodos, e a performance média que obtivemos nos testes.
 
-### Distância euclidiana
+#### Distância euclidiana
 
 Esse método funciona da seguinte maneira:
 
@@ -142,7 +150,7 @@ Média de tempo para gerar recomendações para um usuário com esse método (10
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
-### Correlação de Pearson
+#### Correlação de Pearson
 
 Retorno: entre -1 e 1. Quanto mais perto de 0 pior(mais desperso). Quanto mais próximo de 1 ou -1, melhor (mais concentrado).
 <img src="imgs/pearson.png"><img>
@@ -160,7 +168,7 @@ TEMPO: Person levou em média 617,6 ms para gerar 1 recomendação
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
-### Jaccard
+#### Jaccard
 
 A Similaridade de Jaccard é uma medida estatística que calcula a similaridade entre dois conjuntos, com base na interseção e na união desses conjuntos. Essa métrica é definida como o tamanho da interseção dividido pelo tamanho da união dos conjuntos. Em outras palavras, a Similaridade de Jaccard mede a proporção de elementos comuns entre os conjuntos em relação ao total de elementos presentes nos conjuntos.
 
@@ -174,7 +182,7 @@ Onde:
  - A∩B = elementos em comum entre A e B;
  - A∪B= todos os elementos únicos de A e B juntos.
 
-#### Funcionamento
+##### Funcionamento
 
  1° Comparação entre usuários:
   - Compara um usuário desejado com os outros com base nos filmes assistidos em comum.
@@ -184,7 +192,7 @@ Onde:
  - Recomenda para o usuário alvo os filmes que os usuários similares já assistiram, mas que ele ainda não viu.
  - Prioriza filmes que aparecem com mais frequência entre os usuários similares.
 
-#### Exemplo:
+##### Exemplo:
 
 <img src="imgs/tabelajaccard.jpg" width="250">
 
@@ -208,12 +216,12 @@ Processamento para o Usuário 1
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
-### Manhattan
+#### Manhattan
 
 A distância de Manhattan é uma métrica usada para determinar a distância entre dois pontos em um caminho semelhante a uma grade. Ela mede a soma das diferenças absolutas entre as coordenadas dos pontos.
 Matematicamente, a distância de Manhattan entre dois pontos em um espaço n-dimensional é a soma das diferenças absolutas de suas coordenadas cartesianas.
 
-#### Propriedades 
+##### Propriedades 
 A distância de Manhattan satisfaz todas as quatro condições necessárias para uma função de distância em um espaço métrico:
 
 - 1. *Não negatividade:* A distância entre dois pontos quaisquer é sempre não negativa. d(x, y) ≥ 0 para todos os x e y.
@@ -229,7 +237,7 @@ Diferentemente da distância de cosseno, que não satisfaz a desigualdade triang
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
   
-#### Como código está implementado
+##### Como código está implementado
 
 O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado.
 - read_explore_file: Lê o arquivo datasets/explore.dat para identificar os usuários que devem receber recomendações e armazena os IDs no unordered_set<int> usersToRecommend.
@@ -237,6 +245,14 @@ O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado
 - *findSimilarUsers:*Recebe um usuário-alvo e os dados de avaliações de todos os usuários, com isso compara o usuário-alvo com todos os outros, usando computeDistance e depois ordena os usuários com a menor distância retornando os mais proximos.
 - getRecommendations: Gera recomendações de filmes para o usuário-alvo, baseado nos similares. Para cada filme que o usuário-alvo ainda não viu, acumula uma média ponderada das notas dos usuários similares. Peso = 1 / (1 + distância) → mais próximo = maior peso. Retorna uma lista ordenada com os filmes recomendados e suas pontuações estimadas.
 - generateRecommendations: Principal função que é responsavel por lê os usuários a serem recomendados, onde para cada usuário encontra usuários similares (findSimilarUsers), gera as recomendações(getRecommendations) e exibe elas medindo o tempo de execução de cada recomendação e calcula o tempo médio no final.
+
+### Similaridade de Cosseno
+
+<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+
+### Geração de Recomendações
+
+
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
@@ -261,7 +277,7 @@ O uso de multithreading permite que o programa realize múltiplas tarefas ao mes
 
 #### Recriar funções de conversão de string para int ou float
 
-Outra medida que ajudou a reduzir bastante o tempo de execução do projeto foi criar novas funções que possibilitassem a conversão mais rápida de dados. As funçoes ```atoi(), atof()``` do C fazem a conversão de strings para inteiros e decimais, respectivamente. Entretanto, essas funções fazem muitas operações além da conversão de dados, o que desacelera o processo. Assim, recriando essa funções para fazer as conversões de forma mais simples, as quais podem ser encontradas em XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX, foi possível obter um grande aumento de desempenho, reduzindo o tempo de pré-processamento de 4500ms em média para 1000ms. Além disso, essa decisão ajudou a reduzir em cerca de 200ms o tempo de leitura e processamento do arquivo "input.dat".
+Outra medida que ajudou a reduzir bastante o tempo de execução do projeto foi criar novas funções que possibilitassem a conversão mais rápida de dados. As funçoes ```atoi(), atof()``` do C fazem a conversão de strings para inteiros e decimais, respectivamente. Entretanto, essas funções fazem muitas operações além da conversão de dados, o que desacelera o processo. Assim, recriando essa funções para fazer as conversões de forma mais simples, as quais podem ser encontradas em `include/utils.hpp`, foi possível obter um grande aumento de desempenho, reduzindo o tempo de pré-processamento de 4500ms em média para 1000ms. Além disso, essa decisão ajudou a reduzir em cerca de 100ms o tempo de leitura e processamento do arquivo "input.dat".
 
 ## ⚙️ Fluxo do Programa
 
@@ -423,7 +439,7 @@ A implementação das funcionalidades está na pasta **src/**, com arquivos como
 
 Arquivos como **Makefile** automatizam a compilação, **.gitignore** exclui arquivos desnecessários do versionamento, e **README.md** documenta o projeto. O **pratica.pdf** contém as instruções do trabalho, com a proposta do projeto. Essa estrutura modular garante clareza e facilidade de expansão para novas funcionalidades.
 
-## Classes, funções e configurações
+## 💻️ Classes, funções e configurações
 
 Uma descrição sobre as partes essenciais do programa:
 
