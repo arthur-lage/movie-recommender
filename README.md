@@ -256,28 +256,32 @@ O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
-### ⏳️ Otimizações
+## ⏳️ Otimizações
 
 Como o desempenho do programa foi um dos critérios mais relevantes na avaliação do trabalho, tornou-se essencial otimizar o máximo possível o programa.
 Nesta seção, descreveremos os pontos chaves que levaram o tempo de execução médio do programa de quase 100 segundos para 3 segundos, uma redução de 97%, ou um ganho de performance de 32 vezes.
 
-#### Substituição de funções do C++ pelas de C
+### Substituição de funções do C++ pelas de C
 
 Devido ao overhead de algumas das funcionalidades do C++, foi possível notar uma grande perda de desempenho quando utilizados: ```std::string, std::ofstream, std::ifstream, std::getline()```. Essas estruturas e funções, por implementarem muitas verificações e recursos que não foram utilizadas em nosso projeto, causaram uma redução na performance do programa, já que o processador precisa executar mais operações, que nesse caso não trazem benefícios.
 
 Por isso, decidimos implementar as leituras e escritas de arquivo em C, usando ```FILE*, char*, fopen(), fread(), fwrite(), strtok(), strchr()```, que trouxeram uma melhora significativa no tempo de pré-processamento de dados.
 
-#### Bufferização na leitura e escrita de arquivo
+### Bufferização na leitura e escrita de arquivo
 
 Ao invés de ler os dados um por um ou escrever cada dado separadamente no arquivo pré-processado ou de recomendações, decidimos utilizar a bufferização desses dados. Essa prática consiste em acumular os dados num buffer (uma varíavel) de um determinado tamanho, e quando esse tamanho é atingido, o programa realiza o processamento ou a escrita esses dados. Essa abordagem traz benefícios para performance, uma vez que as operações de I/O (entrada e saída) em disco custam caro para o processador, e executá-las para dezenas de milhares de dados obrigam o computador a fazer muitos acessos ao disco. Usando a bufferização, é possível reduzir bastante a quantidade de operações, diminuindo consideravelmente o tempo gasto para ler e escrever os arquivos.
 
-#### Paralelização (Multithreading)
+### Paralelização (Multithreading)
 
 O uso de multithreading permite que o programa realize múltiplas tarefas ao mesmo tempo, de forma a aproveitar melhor os recursos do processador. Essa estratégia faz com que o programa separe as tarefas para núcleos diferentes do processador, tornando assim possível que essas sejam feitas simultâneamente. Isso foi de extrema importância para o cálculo das recomendações, umas vez que, sem o uso de paralelismo, o programa demorava em média 8 segundos para gerar as recomendações de 50 usuários. Porém, com a implementação dessa técnica, foi possível reduzir esse tempo para menos de 1800ms, já que partes diferentes do processador ficam responsáveis pelos cálculos, ao invés do programa executar linearmente cada um deles.
 
-#### Recriar funções de conversão de string para int ou float
+### Recriar funções de conversão de string para int ou float
 
 Outra medida que ajudou a reduzir bastante o tempo de execução do projeto foi criar novas funções que possibilitassem a conversão mais rápida de dados. As funçoes ```atoi(), atof()``` do C fazem a conversão de strings para inteiros e decimais, respectivamente. Entretanto, essas funções fazem muitas operações além da conversão de dados, o que desacelera o processo. Assim, recriando essa funções para fazer as conversões de forma mais simples, as quais podem ser encontradas em `include/utils.hpp`, foi possível obter um grande aumento de desempenho, reduzindo o tempo de pré-processamento de 4500ms em média para 1000ms. Além disso, essa decisão ajudou a reduzir em cerca de 100ms o tempo de leitura e processamento do arquivo "input.dat".
+
+### Mapeamento de Memória de arquivos
+
+O **mmap** (mapeamento de memória) é uma técnica em C/C++ que mapeia um arquivo diretamente na memória do processo, eliminando a necessidade de leituras e escritas repetitivas por meio de chamadas de sistema tradicionais como `read()` e `write()`. Ao usar `mmap`, o sistema operacional gerencia o carregamento sob demanda dos dados do arquivo em páginas de memória, permitindo acesso eficiente como se fossem arrays em RAM. Isso é especialmente vantajoso para processamento de **arquivos grandes**, pois evita cópias desnecessárias entre buffers do kernel e espaço de usuário, reduzindo sobrecarga e melhorando significativamente a performance. Além disso, o `mmap` permite operações de acesso aleatório eficientes e pode tirar proveito da paginação virtual do sistema, carregando apenas as partes do arquivo que são realmente acessadas, economizando recursos de I/O e memória.
 
 ## ⚙️ Fluxo do Programa
 
