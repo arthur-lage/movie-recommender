@@ -16,7 +16,7 @@ Para rodar o programa, é necessário ter os arquivos "ratings.csv" e "movies.cs
 
 ![Base De Dados](https://www.kaggle.com/datasets/garymk/movielens-25m-dataset)
 
-Além disso, no arquivo "datasets/explore.dat" deve estar definido, em cada linha, o id do usuário que receberá as recomendações de filmes.
+Além disso, no arquivo `datasets/explore.dat` deve estar definido, em cada linha, o id do usuário que receberá as recomendações de filmes.
 
 As instruções mais detalhadas podem ser encontradas na seção <a href="#️-instruções-de-uso">Instruções de Uso</a>
 
