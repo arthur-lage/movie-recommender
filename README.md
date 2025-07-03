@@ -12,7 +12,7 @@
 
 ## ⚠️ IMPORTANTE!
 
-Para rodar o programa, é necessário ter os arquivos "ratings.csv" e "movies.csv" dentro de uma pasta chamada "kaggle-data", que fica localizada na raiz do projeto. Devido aos limites de armazenamento do GitHub, esses arquivos devem ser baixados separadamente pelo link abaixo:
+Para rodar o programa, é necessário ter os arquivos `ratings.csv` e `movies.csv` dentro de uma pasta chamada `/kaggle-data`, que fica localizada na raiz do projeto. Devido aos limites de armazenamento do GitHub, esses arquivos devem ser baixados separadamente pelo link abaixo:
 
 ![Base De Dados](https://www.kaggle.com/datasets/garymk/movielens-25m-dataset)
 
@@ -47,9 +47,9 @@ Esse projeto foi desenvolvido como trabalho final da disciplina de Algoritmos e 
 
 Nesse estudo, foi utilizada a base de dados gratuita "MovieLens 25M", que disponibiliza dados das avaliações de mais de 160 mil usuários em mais de 62 mil filmes. Esses dados foram coletados pelo serviço MovieLens entre 1995 e 2019, tendo o conjunto de dados gerado em 21 de novembro de 2019. Os arquivos usados no desenvolvimento dessa aplicação foram: 
 
-- "ratings.csv": Arquivo que contém as avaliações dos usuários sobre determinado filme, tendo em cada linha o id do usuário, o id do filme, a nota do usuário nesse filme e o momento em que o registro foi feito (timestamp). O timestamp não foi incluido nesse estudo, já que não apresenta relevância na hora de recomendar os filmes para os usuários.
+- `ratings.csv`: Arquivo que contém as avaliações dos usuários sobre determinado filme, tendo em cada linha o id do usuário, o id do filme, a nota do usuário nesse filme e o momento em que o registro foi feito (timestamp). O timestamp não foi incluido nesse estudo, já que não apresenta relevância na hora de recomendar os filmes para os usuários.
 
-- "movies.csv": Arquivo que traz informações sobre os filmes, como: id do filme no banco de dados, nome do filme e os gêneros dele.
+- `movies.csv`: Arquivo que traz informações sobre os filmes, como: id do filme no banco de dados, nome do filme e os gêneros dele.
 
 Dessa maneira, a partir dos dados fornecidos pelo serviço e por meio da similaridade de cossenos, que permite relacionar as avaliações para encontrar usuários semelhantes de forma rápida, foi construido esse algoritmo de recomendação de filmes. Os detalhes de implementação e execução serão detalhados ao longo dessa documentação.
 
@@ -270,6 +270,99 @@ Outra medida que ajudou a reduzir bastante o tempo de execução do projeto foi 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
 ## 📚️ Bibliotecas
+
+Além das bibliotecas criadas para o projeto, foram utilizadas as seguintes bibliotecas padrão:
+
+### Estruturas de Dados e Containers
+
+- **`<unordered_map>`**  
+  Mapa baseado em hash para armazenamento eficiente de pares chave-valor sem ordenação.
+
+- **`<unordered_set>`**  
+  Conjunto baseado em hash para elementos únicos com buscas rápidas.
+
+- **`<vector>`**  
+  Array dinâmico com alocação automática de memória.
+
+- **`<queue>`**  
+  Implementa estruturas FIFO (`queue`) e filas prioritárias (`priority_queue`).
+
+### Manipulação de Strings e I/O
+
+- **`<string>`**  
+  Operações avançadas de manipulação de strings.
+
+- **`<cstring>`**  
+  Funções C-style para manipulação de strings (`strcpy`, `strcmp`).
+
+- **`<iostream>`**  
+  Fluxos padrão de entrada/saída (`cin`, `cout`).
+
+- **`<fstream>`**  
+  Leitura/escrita de arquivos (`ifstream`, `ofstream`).
+
+- **`<sstream>`**  
+  Tratamento de strings como fluxos (`stringstream`).
+
+### Algoritmos e Utilitários
+
+- **`<algorithm>`**  
+  Funções genéricas para containers (`sort`, `find`, `transform`).
+
+- **`<numeric>`**  
+  Operações numéricas em containers (`accumulate`, `inner_product`).
+
+- **`<random>`**  
+  Geração de números aleatórios com diferentes distribuições.
+
+### Matemática e Tipos Numéricos
+
+- **`<cmath>`**  
+  Funções matemáticas básicas (`sqrt`, `pow`, trigonométricas).
+
+- **`<cstdint>`**  
+  Tipos inteiros com tamanho fixo (`uint32_t`, `int64_t`).
+
+### Concorrência e Sincronização
+
+- **`<thread>`**  
+  Criação e gerenciamento de threads.
+
+- **`<mutex>`**  
+  Mecanismos de exclusão mútua para thread-safety.
+
+- **`<condition_variable>`**  
+  Sincronização avançada entre threads.
+
+- **`<atomic>`**  
+  Operações atômicas para acesso seguro a variáveis compartilhadas.
+
+### Tratamento de Erros
+- **`<stdexcept>`**  
+  Classes para exceções padrão (`runtime_error`, `invalid_argument`).
+
+### Sistema e Baixo Nível
+
+- **`<cstdio>`**  
+  I/O estilo C (`printf`, `scanf`).
+
+- **`<cstdlib>`**  
+  Utilitários gerais (`atoi`, `rand`, `exit`).
+
+- **`<sys/stat.h>`**  
+  Verificação de atributos de arquivos (`stat`).
+
+- **`<sys/mman.h>`**  
+  Mapeamento de arquivos em memória (`mmap`).
+
+- **`<fcntl.h>`**  
+  Controle de arquivos em baixo nível (`open`, `O_RDONLY`).
+
+- **`<unistd.h>`**  
+  Chamadas POSIX (`read`, `write`, `sleep`).
+
+- **`<cctype>`**  
+  Classificação de caracteres (`isalpha`, `isdigit`).
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
