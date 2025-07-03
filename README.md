@@ -275,43 +275,60 @@ Outra medida que ajudou a reduzir bastante o tempo de execução do projeto foi 
 
 ## 📂 Estrutura do Projeto
 
-Para esse projeto, utilizamos a seguinte estrutura
+Para esse projeto, utilizamos a seguinte estrutura:
 
 ```bash
 movie-recommender/
 │
-├── datasets/
-│   └── explore.dat # Arquivo que possui a lista de usuários que receberão recomendação
-│   └── input.dat # Arquivo gerado após o pré-processamento dos dados
+├── datasets/                  # Pasta contendo arquivos de dados brutos
+│   ├── explore.dat            # Arquivo de dados para exploração
+│   └── input.dat              # Arquivo de dados de entrada
 │
-├── imgs/ # Pasta com as imagens utilizadas no readme
-│   ├── formula_euclidean_example.png
-│   ├── pearson.png
-│   ├── pearsonFormula.png
-│   ├── tablelajaccard.jpg
-│   └── table_euclidean_example.png
+├── include/                   # Pasta com cabeçalhos (.hpp)
+│   ├── config.hpp             # Configurações do sistema
+│   ├── custom_types.hpp       # Tipos de dados customizados
+│   ├── data_preprocessor.hpp  # Pré-processamento de dados
+│   ├── file_handler.hpp       # Manipulação de arquivos
+│   ├── input_processor.hpp    # Processamento de entrada
+│   ├── movie_reader.hpp       # Leitura de dados de filmes
+│   ├── output_manager.hpp     # Gerenciamento de saída
+│   ├── recommender.hpp        # Lógica de recomendação
+│   └── utils.hpp              # Utilitários diversos
 │
-├── src/ # Pasta com os códigos fontes do projeto
-│   ├── binary_reader.cpp
-│   ├── file_handler.cpp
-│   ├── input_preprocessor.cpp
-│   ├── main.cpp
-│   ├── movie_reader.cpp
-│   ├── output_manager.cpp
-│   └── recommender_cosine.cpp
+├── kaggle-data/               # Dados obtidos do Kaggle
+│   ├── movies.csv             # Informações de filmes
+│   └── ratings.csv            # Avaliações de usuários
 │
-├── include/ # Pasta com os códigos de cabeçalho do projeto
-│   ├── binary_reader.hpp
-│   ├── config.hpp
-│   ├── custom_types.hpp
-│   ├── file_handler.hpp
-│   └── input_preprocessor.hpp
+├── outcome/                   # Resultados gerados
+│   └── output.txt             # Arquivo de saída com as recomendações
 │
-├── .gitignore
-├── Makefile
-├── README.md
-└── pratica.pdf
+├── src/                       # Código fonte (.cpp)
+│   ├── data_preprocessor.cpp  # Implementação do pré-processador
+│   ├── file_handler.cpp       # Implementação do manipulador de arquivos (classe base)
+│   ├── input_processor.cpp    # Implementação do processador dos dados pré-processados
+│   ├── main.cpp               # Ponto de entrada do programa
+│   ├── movie_reader.cpp       # Implementação do leitor de filmes
+│   ├── output_manager.cpp     # Implementação do gerenciador de saída
+│   ├── recommender.cpp        # Implementação do sistema de recomendação
+│   └── utils.cpp              # Implementação de utilitários
+│
+├── .gitignore                 # Arquivo para ignorar no versionamento
+├── Makefile                   # Script de compilação
+├── pratica.pdf                # Instruções do trabalho
+└── README.md                  # Documentação principal do projeto
 ```
+
+**Estrutura e Arquivos do Sistema de Recomendação de Filmes**  
+
+O projeto **movie-recommender** é organizado em pastas que separam os diferentes componentes do sistema, facilitando a manutenção e o desenvolvimento. A pasta **datasets/** contém arquivos essenciais para a funcionalidade principal do programa, como `explore.dat`, que descreve quais os usuários que receberão sugestões de filmes, e `input.dat`, que possui os dados filtrados e pré-processados.
+
+Na pasta **include/**, estão os cabeçalhos (.hpp) que definem as estruturas e funções do sistema. O arquivo **config.hpp** guarda configurações globais, enquanto **custom_types.hpp** define tipos de dados personalizados para melhor organização. O pré-processamento de dados é tratado em **data_preprocessor.hpp**, e a classe base dos arquivos que usam arquivos está em **file_handler.hpp**. Já **input_processor.hpp** lida com a leitura e salvamento dos dados pré-processados, **movie_reader.hpp** concentra a leitura de informações sobre filmes, e **output_manager.hpp** controla a geração do arquivo de resultados. A lógica principal de recomendação está em **recommender.hpp**, e utilitários auxiliares são definidos em **utils.hpp**.  
+
+Os dados externos, obtidos do Kaggle, estão em **kaggle-data/**, com **movies.csv** (metadados de filmes) e **ratings.csv** (avaliações de usuários), servindo como base para gerar as sugestões de filme. Os resultados gerados são salvos em **outcome/output.txt**, que contém as recomendações finais.  
+
+A implementação das funcionalidades está na pasta **src/**, com arquivos como **data_preprocessor.cpp** (pré-processamento), **file_handler.cpp** (operações de arquivo), **input_processor.cpp** (processamento de dados pré-processados), e **main.cpp** (ponto de entrada). O coração do sistema, **recommender.cpp**, implementa os algoritmos de recomendação, enquanto **utils.cpp** fornece funções auxiliares.  
+
+Arquivos como **Makefile** automatizam a compilação, **.gitignore** exclui arquivos desnecessários do versionamento, e **README.md** documenta o projeto. O **pratica.pdf** contém as instruções do trabalho, com a proposta do projeto. Essa estrutura modular garante clareza e facilidade de expansão para novas funcionalidades.
 
 ## Classes, funções e configurações
 
@@ -419,7 +436,7 @@ outcome/output.txt
         <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white"/>
     </a>
     &nbsp;
-    <a href="https://linkedin.com/arthur-lage">
+    <a href="https://linkedin.com/in/arthur-lage">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
     </a>
     &nbsp;
