@@ -5,11 +5,10 @@
 
 #include <unordered_set>
 
-class BinaryReader : public FileHandler {
+class InputProcessor : public FileHandler {
     private:
 
     public:
-        BinaryReader(const char* filename);
+        InputProcessor(const char* filename);
         void process_input(UsersAndMoviesData& usersAndMovies);
-        void process_explore(unordered_set<int> usersToRecommend);
 };
