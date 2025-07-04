@@ -26,12 +26,14 @@ As instruções mais detalhadas podem ser encontradas na seção <a href="#️-i
 - [🔭 Introdução](#-introdução)
 - [📝 Metodologia](#-metodologia)
   - [Pré-processamento](#pré-processamento)
+  - [Processamento do Input](#processamento-do-input)
   - [Métodos de recomendação](#métodos-de-recomendação)
     - [Distância Euclidiana](#distância-euclidiana)
     - [Correlação de Pearson](#correlação-de-pearson)
     - [Jaccard](#jaccard)
     - [Manhattan](#manhattan)
     - [Cosseno](#similaridade-de-cosseno)
+    - [Geração de Recomendações](#geração-de-recomendações)
 - [⏳️ Otimizações](#️-otimizações)
 - [⚙️ Fluxo do Programa](#️-fluxo-do-programa)
 - [📚️ Bibliotecas](#️-bibliotecas)
@@ -102,7 +104,18 @@ Com o fito de obter a melhor performance possível, fizemos algumas substituiç�
 
 ### Processamento do Input
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+Nessa parte falaremos sobre a implementação da parte responsável por processar o input (dados pré-processados).
+
+O processamento é feito através da classe `src/input_processor.cpp`, e ele funciona fazendo a leitura do arquivo `datasets/input.dat`, gerado na parte do pré-processamento de dados. O código então lê as informações no formato:
+
+```
+user1 movie1:rating1 movie2:rating2 movie3:rating3
+user2 movie4:rating4 movie5:rating5 movie6:rating6
+```
+
+Captura as informações desejadas, salvando-as em estruturas de dados próprias de cada thread (já que usamos paralelismo nessa parte). Em fim, ao fim do processamento, juntamos os dados de cada thread em uma só, do tipo personalizado `UsersAndMoviesData`. Esse será usado posteriormente para gerar as sugestões de filmes.
+
+Elementos essenciais nessa etapa foram [Multithreading](#paralelização-multithreading) e [Mapeamento de Memória](#mapeamento-de-memória-de-arquivos), que permitiram uma grande redução no tempo de execução. O mapeamento de memória evita, ao carregar o arquivo para a memória, que muitos acessos em disco sejam feitos, pois demandam muito tempo para serem executados em grandes quantidades. Além desse fator, o multithreading permite que vários usuários sejam processados ao mesmo tempo, ao invés de lidar com um de cada vez. Isso permitiu que reduzíssimos o tempo de execução de 1955 ms, para em média 270ms.
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
@@ -285,7 +298,7 @@ O **mmap** (mapeamento de memória) é uma técnica em C/C++ que mapeia um arqui
 
 ## ⚙️ Fluxo do Programa
 
-<img src="/imgs/fluxograma.jpeg">
+<img src="/imgs/fluxograma.png"/>
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
@@ -636,16 +649,10 @@ outcome/output.txt
 
 ## 📜 Referências
 
-[^1]: A. A. Veloso, "Classificação associativa sob demanda," Ph.D. dissertação, Departamento de Ciência da Computação, Universidade Federal de Minas Gerais, Belo Horizonte, Brasil, 2009.
-
-[^2]: R. Cattral and F. Oppacher, *Poker Hand*, UCI Machine Learning Repository, 2007. [Online]. Available: https://doi.org/10.24432/C5KW38.
-
-[^3]: Microsoft, "pair structure," Microsoft Learn, 2024. [Online]. Available: https://learn.microsoft.com/pt-br/cpp/standard-library/pair-structure?view=msvc-170. [Accessed: Aug. 30, 2024].
-
-[^4]: Microsoft, "unordered_map class," Microsoft Learn, [Online]. Available: https://learn.microsoft.com/pt-br/cpp/standard-library/unordered-map-class?view=msvc-170. [Accessed: Aug. 30, 2024].
-
-[^5]: Microsoft, "vector class," Microsoft Learn, [Online]. Available: https://learn.microsoft.com/pt-br/cpp/standard-library/vector-class?view=msvc-170. [Accessed: Aug. 30, 2024].
-
-[^6]: L. He, Z. Gao, Q. Liu, e Z. Yang, "An Improved Grid Search Algorithm for Parameters Optimization on SVM," Applied Mechanics and Materials, vol. 644-650, pp. 2216-2221, 2014. DOI: 10.4028/www.scientific.net/AMM.644-650.2216.
-
-[^7]: "unordered_set Class | Microsoft Learn," Microsoft, [Online]. Available: https://learn.microsoft.com/pt-br/cpp/standard-library/unordered-set-class?view=msvc-170. [Accessed: 29-Aug-2024].
+<ol>
+  <li>Referencia 1</li>
+  <li>Referencia 2</li>
+  <li>Referencia 3</li>
+  <li>Referencia 4</li>
+  <li>Referencia 5</li>
+</ol>
