@@ -9,6 +9,8 @@
 using namespace std;
 
 int main() {
+    auto t1 = chrono::high_resolution_clock::now();
+    
     DataPreprocessor ratings_file("kaggle-data/ratings.csv", "r");
     ratings_file.process_ratings();
 
@@ -22,6 +24,8 @@ int main() {
     
     Recommender recommender;
     recommender.generateRecommendations(usersAndMovies, movies);
+
+    cout << chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t1).count() << " ms" << endl;
 
     return 0;
 }
