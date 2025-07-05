@@ -20,13 +20,11 @@ inline float fast_atof(const char* p) {
         ++p;
     }
     
-    // Parte inteira
     while (*p >= '0' && *p <= '9') {
         int_part = int_part * 10 + (*p - '0');
         ++p;
     }
     
-    // Parte fracionária
     if (*p == '.') {
         ++p;
         while (*p >= '0' && *p <= '9') {

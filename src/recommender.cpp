@@ -46,7 +46,6 @@ double Recommender::computeCosineSimilarity(user_id_t user1, user_id_t user2,
     const auto &ratings1 = it1->second;
     const auto &ratings2 = it2->second;
 
-    // Escolhe o menor conjunto para iterar
     const auto &smaller = ratings1.size() < ratings2.size() ? ratings1 : ratings2;
     const auto &larger = ratings1.size() < ratings2.size() ? ratings2 : ratings1;
 
@@ -67,8 +66,6 @@ void Recommender::generateRecommendations(const UsersAndMoviesData &usersAndMovi
                                                 const MoviesData &movies)
 {
     OutputManager outputManager;
-    std::vector<uint64_t> genDurations;
-    std::vector<uint64_t> writeDurations;
 
     outputManager.openInOutcome("output.txt");
     std::ostringstream buffer;
