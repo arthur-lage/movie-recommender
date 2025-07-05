@@ -1,0 +1,85 @@
+#include <iostream>
+#include <chrono>
+#include <vector>
+#include <fstream>
+#include <algorithm>
+#include <random>
+
+
+#include "custom_types.hpp"
+#include "input_preprocessor.hpp"
+#include "binary_reader.hpp"
+#include "movie_reader.hpp"
+#include "recommender_cosine.hpp"
+
+using namespace std;
+
+void logMemoryUsage() {
+    std::ifstream status("/proc/self/status");
+    std::string line;
+    
+    while (std::getline(status, line)) {
+        if (line.find("VmRSS") != std::string::npos) { // Memória física usada
+            std::cout << "Memory usage: " << line << std::endl;
+        }
+    }
+}
+
+std::vector<int> selectRandomUsers(const UsersAndMoviesData& usersAndMovies, int sampleSize = 50) {
+    std::vector<int> allUsers;
+    for (const auto& [userId, _] : usersAndMovies) {
+        allUsers.push_back(userId);
+    }
+
+    sampleSize = std::min(sampleSize, static_cast<int>(allUsers.size()));
+    if (sampleSize <= 0) return {};
+
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::shuffle(allUsers.begin(), allUsers.end(), rng);
+
+    return {allUsers.begin(), allUsers.begin() + sampleSize};
+}
+
+// New function to write users to explore.dat
+void writeExploreFile(const std::vector<int>& users, const std::string& filename = "datasets/explore.dat") {
+    std::ofstream outFile(filename);
+    
+    if (!outFile.is_open()) {
+        std::cerr << "Error: Could not open file " << filename << " for writing!\n";
+        return;
+    }
+
+    for (int userId : users) {
+        outFile << userId << "\n";
+    }
+
+    outFile.close();
+    std::cout << "Successfully wrote " << users.size() << " users to " << filename << "\n";
+}
+
+int main() {
+    auto start = chrono::high_resolution_clock::now();
+
+    InputPreprocessor ratings_file("kaggle-data/ratings.csv", "r");
+
+    ratings_file.process_ratings();
+
+    BinaryReader binary_reader("datasets/input.dat");
+    UsersAndMoviesData usersAndMovies;
+    binary_reader.process_input(usersAndMovies);
+
+    MoviesData movies;
+    MovieReader movieReader("kaggle-data/movies.csv", "r");
+    movieReader.getMovies(movies);
+    
+    RecommenderCosine recommenderCosine;
+    recommenderCosine.generateRecommendations(usersAndMovies, movies);
+
+    auto progEnd = chrono::high_resolution_clock::now();
+    auto dur = chrono::duration_cast<chrono::milliseconds>(progEnd - start);
+    logMemoryUsage();
+    cout << "Total time: " << dur.count() << " ms" << endl;
+
+    return 0;
+}
