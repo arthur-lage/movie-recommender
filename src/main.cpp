@@ -7,10 +7,10 @@
 
 
 #include "custom_types.hpp"
-#include "input_preprocessor.hpp"
-#include "binary_reader.hpp"
+#include "data_preprocessor.hpp"
+#include "input_processor.hpp"
 #include "movie_reader.hpp"
-#include "recommender_cosine.hpp"
+#include "recommender.hpp"
 
 using namespace std;
 
@@ -52,26 +52,17 @@ int main() {
 
     auto ppS = chrono::high_resolution_clock::now();
 
-    InputPreprocessor ratings_file("kaggle-data/ratings.csv", "r");
+    DataPreprocessor ratings_file("kaggle-data/ratings.csv", "r");
     ratings_file.process_ratings();
 
     auto ppE = chrono::high_resolution_clock::now();
 
     auto umrS = chrono::high_resolution_clock::now();
 
-    BinaryReader binary_reader("datasets/input.dat");
+    InputProcessor inputProcessor;
     UsersAndMoviesData usersAndMovies;
-    binary_reader.process_input(usersAndMovies);
+    inputProcessor.process_input(usersAndMovies);
 
-    // SHOW USERS AND MOVIES
-
-    // for(auto el : usersAndMovies) {
-    //     cout << "ID: " << el.first << endl;
-    //     for (auto mv : el.second) {
-    //         cout << "Movie: " << mv.movie << ", Score: " << mv.score << endl;
-    //     }
-    // }
-    
     auto umrE = chrono::high_resolution_clock::now();
 
     auto rmS = chrono::high_resolution_clock::now();
@@ -79,19 +70,12 @@ int main() {
     MovieReader movieReader("kaggle-data/movies.csv", "r");
     movieReader.getMovies(movies);
 
-//  for(auto el : movies) {
-//         cout << "ID: " << el.first << ", Nome: " << el.second << endl;
-        
-//     }
-
     auto rmE = chrono::high_resolution_clock::now();
-
-
 
     auto recS = chrono::high_resolution_clock::now();
     
-    RecommenderCosine recommenderCosine;
-    recommenderCosine.generateRecommendations(usersAndMovies, movies);
+    Recommender recommender;
+    recommender.generateRecommendations(usersAndMovies, movies);
 
     auto recE = chrono::high_resolution_clock::now();
 

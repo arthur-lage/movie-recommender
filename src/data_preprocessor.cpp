@@ -1,6 +1,6 @@
 #include "config.hpp"
 #include "custom_types.hpp"
-#include "input_preprocessor.hpp"
+#include "data_preprocessor.hpp"
 #include "utils.hpp"
 
 #include <algorithm>
@@ -15,7 +15,7 @@ using namespace std;
 constexpr size_t READ_BUFFER_SIZE = 32 * 1024 * 1024;  // 32 MB
 constexpr size_t WRITE_BUFFER_SIZE = 32 * 1024 * 1024; // 32 MB
 
-InputPreprocessor::InputPreprocessor(const char *filename, const char *mode)
+DataPreprocessor::DataPreprocessor(const char *filename, const char *mode)
     : FileHandler(filename, mode) {}
 
 #pragma pack(push, 1)
@@ -49,7 +49,7 @@ inline char* write_rating(char* ptr, float rating) {
     return ptr;
 }
 
-void InputPreprocessor::process_ratings() {
+void DataPreprocessor::process_ratings() {
     vector<uint16_t> movie_counter(209171, 0);
     vector<uint16_t> user_counter(162541, 0);
     

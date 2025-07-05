@@ -1,4 +1,4 @@
-#include "recommender_cosine.hpp"
+#include "recommender.hpp"
 #include "config.hpp"
 #include "output_manager.hpp"
 
@@ -17,9 +17,9 @@
 #include <queue>
 #include <atomic>
 
-RecommenderCosine::RecommenderCosine() {}
+Recommender::Recommender() {}
 
-void RecommenderCosine::precomputeUserNorms(const UsersAndMoviesData &data)
+void Recommender::precomputeUserNorms(const UsersAndMoviesData &data)
 {
     userNorms.clear();
     userNorms.reserve(data.size());
@@ -35,7 +35,7 @@ void RecommenderCosine::precomputeUserNorms(const UsersAndMoviesData &data)
     }
 }
 
-double RecommenderCosine::computeCosineSimilarity(user_id_t user1, user_id_t user2,
+double Recommender::computeCosineSimilarity(user_id_t user1, user_id_t user2,
                                                   const UsersAndMoviesData &data) const
 {
     auto it1 = data.find(user1);
@@ -63,7 +63,7 @@ double RecommenderCosine::computeCosineSimilarity(user_id_t user1, user_id_t use
     return (normProduct > 0) ? (dotProduct / normProduct) : 0.0;
 }
 
-void RecommenderCosine::generateRecommendations(const UsersAndMoviesData &usersAndMovies,
+void Recommender::generateRecommendations(const UsersAndMoviesData &usersAndMovies,
                                                 const MoviesData &movies)
 {
     OutputManager outputManager;
