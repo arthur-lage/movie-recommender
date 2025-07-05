@@ -263,32 +263,37 @@ O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
-### Comparativo de Performace de Recomendação 
-Analisando apenas o tempo que o algoritmo gasta, em média, para gerar uma única recomendação(desconsiderando tempos de pré-processamento, outros tipos de tratamento, etc) tem-se:
+### Comparativo de Performace de Recomendação
 
+Analisando apenas o tempo que o algoritmo gasta, em média, para gerar uma única recomendação (desconsiderando tempos de pré-processamento, outros tipos de tratamento, etc) tem-se:
 
 <img src="imgs/comparativoMetodosRecomendacao.jpeg">
 
-### 🔍 Análise dos Resultados  
+#### 🔍 Análise dos Resultados  
 
-#### **Cosseno (Mais rápido - 177 ms) - Algoritmo Escolhido**  
+##### **Cosseno (Mais rápido - 177 ms) - Algoritmo Escolhido**  
+
 - **Motivo da velocidade**:  
   - Baseado em produto escalar e normas, operações altamente otimizadas.  
   - Não requer cálculo de raízes quadradas.  
 - **Hardware**: Operações vetorizadas se beneficiam de paralelismo(posteriormente aplicado).  
 
-#### **Pearson (217 ms)**  
+##### **Pearson (217 ms)**  
+
 - **Semelhança com Cosseno**, mas normalizado pela média.  
 - **Leve custo adicional** devido ao cálculo das médias.  
 
-#### **Manhattan (304 ms)**  
+##### **Manhattan (304 ms)**  
+
 - **Soma de diferenças absolutas**, sem operações complexas.  
 - **Mais lento que Cosseno/Pearson** devido a loops sequenciais.  
 
-#### **Euclidiano (330 ms)**  
+##### **Euclidiano (330 ms)**  
+
 - **Envolve raiz quadrada**, o que aumenta o tempo.  
 
-#### **Jaccard (Mais lento - 358 ms)**  
+##### **Jaccard (Mais lento - 358 ms)**  
+
 - **Operações sobre conjuntos** (interseção/uniao), menos eficientes.  
 - **Dimensionalidade**: algoritmos como Jaccard sofrem com alta dimensionalidade.  
 
