@@ -1,5 +1,4 @@
 #include "input_processor.hpp"
-#include "utils.hpp"
 
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -14,62 +13,95 @@
 
 using namespace std;
 
-InputProcessor::InputProcessor(const char* filename) : FileHandler(filename, "rb") {}
+InputProcessor::InputProcessor() {}
 
-char* map_input_file(const std::string& path, size_t& file_size, int& fd) {
-    fd = open(path.c_str(), O_RDONLY);
+inline int fast_atoi(const char*& p) {
+    int x = 0;
+    while (*p >= '0' && *p <= '9') {
+        x = x * 10 + (*p - '0');
+        ++p;
+    }
+    return x;
+}
+
+inline float fast_atof(const char*& p) {
+    int int_part = 0;
+    int frac_part = 0;
+    int frac_digits = 0;
+    bool negative = false;
+    
+    if (*p == '-') {
+        negative = true;
+        ++p;
+    }
+    
+    while (*p >= '0' && *p <= '9') {
+        int_part = int_part * 10 + (*p - '0');
+        ++p;
+    }
+    
+    if (*p == '.') {
+        ++p;
+        while (*p >= '0' && *p <= '9') {
+            if (frac_digits < 2) {
+                frac_part = frac_part * 10 + (*p - '0');
+                ++frac_digits;
+            }
+            ++p;
+        }
+    }
+    
+    float value = int_part;
+    if (frac_digits == 1) {
+        value += frac_part * 0.1f;
+    } else if (frac_digits == 2) {
+        value += frac_part * 0.01f;
+    }
+    return negative ? -value : value;
+}
+
+void InputProcessor::process_input(UsersAndMoviesData& usersAndMovies) {
+    int fd = open("datasets/input.dat", O_RDONLY);
     if (fd == -1) {
         perror("Error opening file");
-        return nullptr;
+        return;
     }
 
     struct stat sb;
     if (fstat(fd, &sb) == -1) {
         perror("File stat error");
         ::close(fd);
-        return nullptr;
+        return;
     }
-    file_size = sb.st_size;
+    size_t file_size = sb.st_size;
 
     char* mapped_data = static_cast<char*>(mmap(nullptr, file_size, PROT_READ, MAP_PRIVATE, fd, 0));
     if (mapped_data == MAP_FAILED) {
         perror("mmap failed");
         ::close(fd);
-        return nullptr;
+        return;
     }
-
-    return mapped_data;
-}
-
-
-std::vector<std::pair<const char*, const char*>> split_chunks(const char* data, size_t size, unsigned num_chunks) {
-    std::vector<std::pair<const char*, const char*>> chunks;
-    const size_t chunk_size = size / num_chunks;
-
-    const char* start = data;
-    for (unsigned i = 0; i < num_chunks; ++i) {
-        const char* end = (i == num_chunks - 1) ? data + size : start + chunk_size;
-        while (end < data + size && *end != '\n') ++end;
-        if (end < data + size) ++end;
-        chunks.emplace_back(start, end);
-        start = end;
-    }
-
-    return chunks;
-}
-
-void InputProcessor::process_input(UsersAndMoviesData& usersAndMovies) {
-    int fd;
-    size_t file_size;
-    char* mapped_data = map_input_file("datasets/input.dat", file_size, fd);
-    if (!mapped_data) return;
 
     const unsigned num_threads = max(1u, thread::hardware_concurrency());
     vector<thread> threads;
     vector<UsersAndMoviesData> thread_data(num_threads);
     vector<mutex> mutexes(num_threads);
 
-    auto chunks = split_chunks(mapped_data, file_size, num_threads);
+    vector<pair<const char*, const char*>> chunks;
+    const size_t chunk_size = file_size / num_threads;
+    const char* chunk_start = mapped_data;
+
+    for (unsigned i = 0; i < num_threads; ++i) {
+        const char* chunk_end = (i == num_threads - 1) 
+            ? mapped_data + file_size 
+            : chunk_start + chunk_size;
+        
+        while (chunk_end < mapped_data + file_size && *chunk_end != '\n') ++chunk_end;
+        if (chunk_end < mapped_data + file_size) ++chunk_end;
+
+        chunks.emplace_back(chunk_start, chunk_end);
+        chunk_start = chunk_end;
+    }
 
     auto worker = [&](int thread_id, const char* start, const char* end) {
         auto& local_data = thread_data[thread_id];
@@ -87,7 +119,7 @@ void InputProcessor::process_input(UsersAndMoviesData& usersAndMovies) {
                 if (p < end) ++p;
                 continue;
             }
-            ++p; 
+            ++p;
 
             unordered_set<Rating, Rating::Hash> ratings;
             
@@ -97,6 +129,7 @@ void InputProcessor::process_input(UsersAndMoviesData& usersAndMovies) {
                 ++p;
                 
                 float score = fast_atof(p);
+                
                 ratings.insert({movie_id, score});
                 
                 if (*p == ' ') ++p;

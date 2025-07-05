@@ -20,8 +20,8 @@ DataPreprocessor::DataPreprocessor(const char *filename, const char *mode)
 
 #pragma pack(push, 1)
 struct RatingEntry {
-    uint32_t user;
-    uint32_t movie;
+    int32_t user;
+    int32_t movie;
     float rating;
 };
 #pragma pack(pop)
@@ -49,7 +49,149 @@ inline char* write_rating(char* ptr, float rating) {
     return ptr;
 }
 
-void write_preprocessed_input(vector<RatingEntry> valid_entries, vector<uint16_t> user_counter_valid) {
+void DataPreprocessor::process_ratings() {
+    vector<uint16_t> movie_counter(209171, 0);
+    vector<uint16_t> user_counter(162541, 0);
+    
+    vector<RatingEntry> entries;
+    entries.reserve(25000000);
+
+    // Buffer de leitura alinhado
+    vector<char> buffer(READ_BUFFER_SIZE + 64); // +64 para alinhamento
+    char* aligned_buffer = buffer.data();
+    // Ajustar alinhamento para 64 bytes
+    if (reinterpret_cast<uintptr_t>(aligned_buffer) % 64 != 0) {
+        aligned_buffer += 64 - (reinterpret_cast<uintptr_t>(aligned_buffer) % 64);
+    }
+    
+    char* current = aligned_buffer;
+    size_t bytes_remaining = 0;
+    bool first_line = true;
+
+    // Fase 1: Leitura e parsing dos dados
+    while (true) {
+        // Recarregar buffer se necessário
+        if (bytes_remaining < 256) {
+            // Mover dados restantes para o início
+            if (bytes_remaining > 0) {
+                memmove(aligned_buffer, current, bytes_remaining);
+            }
+            
+            // Ler novos dados
+            size_t bytes_read = fread(
+                aligned_buffer + bytes_remaining,
+                1,
+                READ_BUFFER_SIZE - bytes_remaining,
+                file
+            );
+            
+            if (bytes_read == 0) {
+                if (bytes_remaining == 0) break;
+            } else {
+                bytes_remaining += bytes_read;
+            }
+            current = aligned_buffer;
+        }
+
+        // Encontrar próxima quebra de linha
+        char* line_end = static_cast<char*>(memchr(current, '\n', bytes_remaining));
+        if (!line_end) {
+            // Se não encontrou, mover restante para início e continuar
+            if (bytes_remaining > 0) {
+                memmove(aligned_buffer, current, bytes_remaining);
+            }
+            size_t bytes_read = fread(
+                aligned_buffer + bytes_remaining,
+                1,
+                READ_BUFFER_SIZE - bytes_remaining,
+                file
+            );
+            if (bytes_read == 0) break;
+            bytes_remaining += bytes_read;
+            current = aligned_buffer;
+            continue;
+        }
+        
+        // Terminar a linha atual
+        *line_end = '\0';
+        size_t line_length = line_end - current + 1;
+        
+        // Pular cabeçalho
+        if (first_line) {
+            first_line = false;
+            bytes_remaining -= line_length;
+            current = line_end + 1;
+            continue;
+        }
+
+        // Variáveis de parsing (inicializadas antes de qualquer condicional)
+        int user = 0;
+        int movie = 0;
+        float rating = 0.0f;
+        bool valid_line = true;
+        const char* p = current;
+
+        // Parse do user ID
+        user = fast_atoi(p);
+        if (*p != ',') {
+            valid_line = false;
+        } else {
+            p++; // Pular vírgula
+            
+            // Parse do movie ID
+            movie = fast_atoi(p);
+            if (*p != ',') {
+                valid_line = false;
+            } else {
+                p++; // Pular vírgula
+                
+                // Parse da avaliação
+                rating = fast_atof(p);
+            }
+        }
+
+        // Processar linha válida
+        if (valid_line) {
+            // Atualizar contadores
+            if (static_cast<size_t>(movie) < movie_counter.size()) {
+                movie_counter[movie]++;
+            }
+            if (static_cast<size_t>(user) < user_counter.size()) {
+                user_counter[user]++;
+            }
+            
+            // Armazenar entrada
+            entries.push_back({user, movie, rating});
+        }
+
+        // Atualizar ponteiros do buffer
+        bytes_remaining -= line_length;
+        current = line_end + 1;
+    }
+
+    // Fase 2: Filtragem de filmes válidos
+    vector<bool> valid_movie(movie_counter.size(), false);
+    for (size_t i = 0; i < movie_counter.size(); ++i) {
+        if (movie_counter[i] >= MININUM_REVIEW_COUNT_PER_MOVIE) {
+            valid_movie[i] = true;
+        }
+    }
+
+    // Fase 3: Pré-processamento de usuários válidos
+    vector<uint16_t> user_counter_valid(user_counter.size(), 0);
+    vector<RatingEntry> valid_entries;
+    valid_entries.reserve(entries.size());
+
+    for (const auto& entry : entries) {
+        if (static_cast<size_t>(entry.movie) < valid_movie.size() && 
+            valid_movie[entry.movie]) {
+            valid_entries.push_back(entry);
+            if (static_cast<size_t>(entry.user) < user_counter_valid.size()) {
+                user_counter_valid[entry.user]++;
+            }
+        }
+    }
+
     FILE* output_file = fopen("datasets/input.dat", "wb");
     if (!output_file) {
         perror("Erro ao abrir arquivo de saída");
@@ -87,11 +229,11 @@ void write_preprocessed_input(vector<RatingEntry> valid_entries, vector<uint16_t
         ptr = write_int(ptr, current_user);
         
         while (it != valid_entries.end() && it->user == current_user) {
-            *ptr++ = ' ';
+            *ptr++ = ' '; // Separador
             
             ptr = write_int(ptr, it->movie);
             
-            *ptr++ = ':';
+            *ptr++ = ':'; // Separador
 
             ptr = write_rating(ptr, it->rating);
             
@@ -108,131 +250,4 @@ void write_preprocessed_input(vector<RatingEntry> valid_entries, vector<uint16_t
     }
     
     fclose(output_file);
-}
-
-bool parse_line(const char* line, uint32_t& user, uint32_t& movie, float& rating) {
-    const char* p = line;
-    user = fast_atoi(p);
-    if (*p != ',') return false;
-    p++;
-
-    movie = fast_atoi(p);
-    if (*p != ',') return false;
-    p++;
-
-    rating = fast_atof(p);
-    return true;
-}
-
-void process_valid_line(uint32_t user, uint32_t movie, float rating,
-                        std::vector<uint16_t>& user_counter,
-                        std::vector<uint16_t>& movie_counter,
-                        std::vector<RatingEntry>& entries) {
-    if (static_cast<size_t>(movie) < movie_counter.size()) {
-        movie_counter[movie]++;
-    }
-    if (static_cast<size_t>(user) < user_counter.size()) {
-        user_counter[user]++;
-    }
-    entries.push_back({user, movie, rating});
-}
-
-void DataPreprocessor::process_ratings() {
-    vector<uint16_t> movie_counter(209171, 0);
-    vector<uint16_t> user_counter(162541, 0);
-    
-    vector<RatingEntry> entries;
-    entries.reserve(25000000);
-
-    vector<char> buffer(READ_BUFFER_SIZE + 64);
-    char* aligned_buffer = buffer.data();
-
-    if (reinterpret_cast<uintptr_t>(aligned_buffer) % 64 != 0) {
-        aligned_buffer += 64 - (reinterpret_cast<uintptr_t>(aligned_buffer) % 64);
-    }
-    
-    char* current = aligned_buffer;
-    size_t bytes_remaining = 0;
-    bool first_line = true;
-
-    while (true) {
-        if (bytes_remaining < 256) {
-            if (bytes_remaining > 0) {
-                memmove(aligned_buffer, current, bytes_remaining);
-            }
-            
-            size_t bytes_read = fread(
-                aligned_buffer + bytes_remaining,
-                1,
-                READ_BUFFER_SIZE - bytes_remaining,
-                file
-            );
-            
-            if (bytes_read == 0) {
-                if (bytes_remaining == 0) break;
-            } else {
-                bytes_remaining += bytes_read;
-            }
-            current = aligned_buffer;
-        }
-
-        char* line_end = static_cast<char*>(memchr(current, '\n', bytes_remaining));
-        if (!line_end) {
-            if (bytes_remaining > 0) {
-                memmove(aligned_buffer, current, bytes_remaining);
-            }
-            size_t bytes_read = fread(
-                aligned_buffer + bytes_remaining,
-                1,
-                READ_BUFFER_SIZE - bytes_remaining,
-                file
-            );
-            if (bytes_read == 0) break;
-            bytes_remaining += bytes_read;
-            current = aligned_buffer;
-            continue;
-        }
-        
-        *line_end = '\0';
-        size_t line_length = line_end - current + 1;
-        
-        if (first_line) {
-            first_line = false;
-            bytes_remaining -= line_length;
-            current = line_end + 1;
-            continue;
-        }
-
-        uint32_t user = 0, movie = 0;
-        float rating = 0.0f;
-        if (parse_line(current, user, movie, rating)) {
-            process_valid_line(user, movie, rating, user_counter, movie_counter, entries);
-        }
-
-        bytes_remaining -= line_length;
-        current = line_end + 1;
-    }
-
-    vector<bool> valid_movie(movie_counter.size(), false);
-    for (size_t i = 0; i < movie_counter.size(); ++i) {
-        if (movie_counter[i] >= MININUM_REVIEW_COUNT_PER_MOVIE) {
-            valid_movie[i] = true;
-        }
-    }
-
-    vector<uint16_t> user_counter_valid(user_counter.size(), 0);
-    vector<RatingEntry> valid_entries;
-    valid_entries.reserve(entries.size());
-
-    for (const auto& entry : entries) {
-        if (static_cast<size_t>(entry.movie) < valid_movie.size() && 
-            valid_movie[entry.movie]) {
-            valid_entries.push_back(entry);
-            if (static_cast<size_t>(entry.user) < user_counter_valid.size()) {
-                user_counter_valid[entry.user]++;
-            }
-        }
-    }
-
-    write_preprocessed_input(valid_entries, user_counter_valid);
 }

@@ -63,111 +63,6 @@ double Recommender::computeCosineSimilarity(user_id_t user1, user_id_t user2,
     return (normProduct > 0) ? (dotProduct / normProduct) : 0.0;
 }
 
-std::vector<std::pair<user_id_t, double>> Recommender::findSimilarUsers(
-    user_id_t targetUser, 
-    const UsersAndMoviesData& usersAndMovies,
-    int k) const 
-{
-    std::vector<std::pair<user_id_t, double>> similarUsers;
-    
-    for (const auto &[otherUser, _] : usersAndMovies) {
-        if (targetUser == otherUser) continue;
-
-        double similarity = computeCosineSimilarity(targetUser, otherUser, usersAndMovies);
-        if (similarity > 0.2) {
-            similarUsers.emplace_back(otherUser, similarity);
-        }
-    }
-
-    if (similarUsers.size() > k) {
-        std::partial_sort(similarUsers.begin(), similarUsers.begin() + k, similarUsers.end(),
-                          [](const auto &a, const auto &b) { return a.second > b.second; });
-        similarUsers.resize(k);
-    } else {
-        std::sort(similarUsers.begin(), similarUsers.end(),
-                  [](const auto &a, const auto &b) { return a.second > b.second; });
-    }
-    
-    return similarUsers;
-}
-
-std::unordered_map<movie_id_t, std::pair<double, double>> Recommender::calculatePredictions(
-    user_id_t targetUser,
-    const std::vector<std::pair<user_id_t, double>>& similarUsers,
-    const UsersAndMoviesData& usersAndMovies) const 
-{
-    std::unordered_map<movie_id_t, std::pair<double, double>> predictions;
-    const auto &targetRatings = usersAndMovies.at(targetUser);
-
-    for (const auto &[similarUser, similarity] : similarUsers) {
-        for (const Rating &r : usersAndMovies.at(similarUser)) {
-            if (targetRatings.find(Rating{r.movie, 0}) == targetRatings.end()) {
-                predictions[r.movie].first += r.score * similarity;
-                predictions[r.movie].second += similarity;
-            }
-        }
-    }
-    
-    return predictions;
-}
-
-std::vector<std::pair<movie_id_t, double>> Recommender::generateTopRecommendations(
-    const std::unordered_map<movie_id_t, std::pair<double, double>>& predictions,
-    int maxRecs) const 
-{
-    std::vector<std::pair<movie_id_t, double>> recommendations;
-    
-    for (const auto &[movie, scores] : predictions) {
-        if (scores.second > 0) {
-            recommendations.emplace_back(movie, scores.first / scores.second);
-        }
-    }
-
-    if (recommendations.size() > maxRecs) {
-        std::partial_sort(recommendations.begin(), recommendations.begin() + maxRecs,
-                          recommendations.end(),
-                          [](const auto &a, const auto &b) { return a.second > b.second; });
-        recommendations.resize(maxRecs);
-    } else {
-        std::sort(recommendations.begin(), recommendations.end(),
-                  [](const auto &a, const auto &b) { return a.second > b.second; });
-    }
-    
-    return recommendations;
-}
-
-void Recommender::processUserRecommendations(
-    user_id_t targetUser,
-    const UsersAndMoviesData& usersAndMovies,
-    const MoviesData& movies,
-    OutputManager& outputManager,
-    std::mutex& outputMutex) const 
-{
-    const int k = 15;
-    const int maxRecs = NUMBER_OF_RECOMMENDATIONS_PER_USER;
-
-    if (usersAndMovies.find(targetUser) == usersAndMovies.end()) {
-        std::cout << "Usuário " << targetUser << " não encontrado no dataset.\n";
-        return;
-    }
-
-    auto similarUsers = findSimilarUsers(targetUser, usersAndMovies, k);
-    auto predictions = calculatePredictions(targetUser, similarUsers, usersAndMovies);
-    auto recommendations = generateTopRecommendations(predictions, maxRecs);
-
-    std::ostringstream buffer;
-    buffer << "\n\nRecommendations for user " << targetUser << ":\n\n";
-    for (const auto &[movieId, score] : recommendations) {
-        auto it = movies.find(movieId);
-        if (it != movies.end()) {
-            buffer << it->second << " (Score: " << score << ")\n";
-        }
-    }
-
-    std::lock_guard<std::mutex> outputLock(outputMutex);
-    outputManager.write(buffer.str().c_str(), buffer.str().size());
-}
-
 void Recommender::generateRecommendations(const UsersAndMoviesData &usersAndMovies,
                                                 const MoviesData &movies)
 {
@@ -211,144 +106,122 @@ void Recommender::generateRecommendations(const UsersAndMoviesData &usersAndMovi
 
     auto worker = [&]()
     {
-        // const int k = 15;             
-        // const int maxRecs = NUMBER_OF_RECOMMENDATIONS_PER_USER;
+        const int k = 15;             
+        const int maxRecs = NUMBER_OF_RECOMMENDATIONS_PER_USER;
 
-        // while (true)
-        // {
-        //     user_id_t targetUser;
-        //     bool emptyQueue = false;
-
-        //     {
-        //         std::unique_lock<std::mutex> lock(queueMutex);
-        //         cv.wait(lock, [&]()
-        //                 { return done || !userQueue.empty(); });
-
-        //         if (done && userQueue.empty())
-        //             return;
-        //         if (userQueue.empty())
-        //             continue;
-
-        //         targetUser = userQueue.front();
-        //         userQueue.pop();
-        //         emptyQueue = userQueue.empty();
-        //     }
-
-        //     if (emptyQueue)
-        //     {
-        //         cv.notify_one();
-        //     }
-
-        //     if (usersAndMovies.find(targetUser) == usersAndMovies.end())
-        //     {
-        //         std::lock_guard<std::mutex> consoleLock(consoleMutex);
-        //         std::cout << "Usuário " << targetUser << " não encontrado no dataset.\n";
-        //         continue;
-        //     }
-
-        //     std::vector<std::pair<user_id_t, double>> similarUsers;
-        //     for (const auto &[otherUser, _] : usersAndMovies)
-        //     {
-        //         if (targetUser == otherUser)
-        //             continue;
-
-        //         double similarity = computeCosineSimilarity(targetUser, otherUser, usersAndMovies);
-        //         if (similarity > 0.2)
-        //         {
-        //             similarUsers.emplace_back(otherUser, similarity);
-        //         }
-        //     }
-
-        //     if (similarUsers.size() > k)
-        //     {
-        //         std::partial_sort(similarUsers.begin(), similarUsers.begin() + k, similarUsers.end(),
-        //                           [](const auto &a, const auto &b)
-        //                           { return a.second > b.second; });
-        //         similarUsers.resize(k);
-        //     }
-        //     else
-        //     {
-        //         std::sort(similarUsers.begin(), similarUsers.end(),
-        //                   [](const auto &a, const auto &b)
-        //                   { return a.second > b.second; });
-        //     }
-
-        //     std::unordered_map<movie_id_t, std::pair<double, double>> predictions;
-        //     const auto &targetRatings = usersAndMovies.at(targetUser);
-
-        //     for (const auto &[similarUser, similarity] : similarUsers)
-        //     {
-        //         for (const Rating &r : usersAndMovies.at(similarUser))
-        //         {
-        //             if (targetRatings.find(Rating{r.movie, 0}) == targetRatings.end())
-        //             {
-        //                 predictions[r.movie].first += r.score * similarity;
-        //                 predictions[r.movie].second += similarity;
-        //             }
-        //         }
-        //     }
-
-        //     std::vector<std::pair<movie_id_t, double>> recommendations;
-        //     for (const auto &[movie, scores] : predictions)
-        //     {
-        //         if (scores.second > 0)
-        //         {
-        //             recommendations.emplace_back(movie, scores.first / scores.second);
-        //         }
-        //     }
-
-        //     if (recommendations.size() > maxRecs)
-        //     {
-        //         std::partial_sort(recommendations.begin(), recommendations.begin() + maxRecs,
-        //                           recommendations.end(),
-        //                           [](const auto &a, const auto &b)
-        //                           { return a.second > b.second; });
-        //         recommendations.resize(maxRecs);
-        //     }
-        //     else
-        //     {
-        //         std::sort(recommendations.begin(), recommendations.end(),
-        //                   [](const auto &a, const auto &b)
-        //                   { return a.second > b.second; });
-        //     }
-
-        //     std::ostringstream buffer;
-        //     buffer << "\n\nRecommendations for user " << targetUser << ":\n\n";
-        //     for (const auto &[movieId, score] : recommendations)
-        //     {
-        //         auto it = movies.find(movieId);
-        //         if (it != movies.end())
-        //         {
-        //             buffer << it->second << " (Score: " << score << ")\n";
-        //         }
-        //     }
-
-        //     {
-        //         std::lock_guard<std::mutex> outputLock(outputMutex);
-        //         outputManager.write(buffer.str().c_str(), buffer.str().size());
-        //     }
-        // }
-        while(true) {
+        while (true)
+        {
             user_id_t targetUser;
             bool emptyQueue = false;
 
             {
                 std::unique_lock<std::mutex> lock(queueMutex);
-                cv.wait(lock, [&]() { return done || !userQueue.empty(); });
+                cv.wait(lock, [&]()
+                        { return done || !userQueue.empty(); });
 
-                if (done && userQueue.empty()) return;
-                if (userQueue.empty()) continue;
+                if (done && userQueue.empty())
+                    return;
+                if (userQueue.empty())
+                    continue;
 
                 targetUser = userQueue.front();
                 userQueue.pop();
                 emptyQueue = userQueue.empty();
             }
 
-            if(emptyQueue) {
+            if (emptyQueue)
+            {
                 cv.notify_one();
             }
 
-            processUserRecommendations(targetUser, usersAndMovies, movies, outputManager, outputMutex);
+            if (usersAndMovies.find(targetUser) == usersAndMovies.end())
+            {
+                std::lock_guard<std::mutex> consoleLock(consoleMutex);
+                std::cout << "Usuário " << targetUser << " não encontrado no dataset.\n";
+                continue;
+            }
+
+            std::vector<std::pair<user_id_t, double>> similarUsers;
+            for (const auto &[otherUser, _] : usersAndMovies)
+            {
+                if (targetUser == otherUser)
+                    continue;
+
+                double similarity = computeCosineSimilarity(targetUser, otherUser, usersAndMovies);
+                if (similarity > 0.2)
+                {
+                    similarUsers.emplace_back(otherUser, similarity);
+                }
+            }
+
+            if (similarUsers.size() > k)
+            {
+                std::partial_sort(similarUsers.begin(), similarUsers.begin() + k, similarUsers.end(),
+                                  [](const auto &a, const auto &b)
+                                  { return a.second > b.second; });
+                similarUsers.resize(k);
+            }
+            else
+            {
+                std::sort(similarUsers.begin(), similarUsers.end(),
+                          [](const auto &a, const auto &b)
+                          { return a.second > b.second; });
+            }
+
+            std::unordered_map<movie_id_t, std::pair<double, double>> predictions;
+            const auto &targetRatings = usersAndMovies.at(targetUser);
+
+            for (const auto &[similarUser, similarity] : similarUsers)
+            {
+                for (const Rating &r : usersAndMovies.at(similarUser))
+                {
+                    if (targetRatings.find(Rating{r.movie, 0}) == targetRatings.end())
+                    {
+                        predictions[r.movie].first += r.score * similarity;
+                        predictions[r.movie].second += similarity;
+                    }
+                }
+            }
+
+            std::vector<std::pair<movie_id_t, double>> recommendations;
+            for (const auto &[movie, scores] : predictions)
+            {
+                if (scores.second > 0)
+                {
+                    recommendations.emplace_back(movie, scores.first / scores.second);
+                }
+            }
+
+            if (recommendations.size() > maxRecs)
+            {
+                std::partial_sort(recommendations.begin(), recommendations.begin() + maxRecs,
+                                  recommendations.end(),
+                                  [](const auto &a, const auto &b)
+                                  { return a.second > b.second; });
+                recommendations.resize(maxRecs);
+            }
+            else
+            {
+                std::sort(recommendations.begin(), recommendations.end(),
+                          [](const auto &a, const auto &b)
+                          { return a.second > b.second; });
+            }
+
+            std::ostringstream buffer;
+            buffer << "\n\nRecommendations for user " << targetUser << ":\n\n";
+            for (const auto &[movieId, score] : recommendations)
+            {
+                auto it = movies.find(movieId);
+                if (it != movies.end())
+                {
+                    buffer << it->second << " (Score: " << score << ")\n";
+                }
+            }
+
+            {
+                std::lock_guard<std::mutex> outputLock(outputMutex);
+                outputManager.write(buffer.str().c_str(), buffer.str().size());
+            }
         }
     };
 

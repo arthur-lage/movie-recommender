@@ -1,4 +1,10 @@
 #include <iostream>
+#include <chrono>
+#include <vector>
+#include <fstream>
+#include <algorithm>
+#include <random>
+
 
 #include "custom_types.hpp"
 #include "data_preprocessor.hpp"
@@ -8,32 +14,83 @@
 
 using namespace std;
 
-int main()
-{
-    auto t1 = chrono::high_resolution_clock::now();
+std::vector<int> selectRandomUsers(const UsersAndMoviesData& usersAndMovies, int sampleSize = 50) {
+    std::vector<int> allUsers;
+    for (const auto& [userId, _] : usersAndMovies) {
+        allUsers.push_back(userId);
+    }
 
-    auto t_ratings = chrono::high_resolution_clock::now();
+    sampleSize = std::min(sampleSize, static_cast<int>(allUsers.size()));
+    if (sampleSize <= 0) return {};
+
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::shuffle(allUsers.begin(), allUsers.end(), rng);
+
+    return {allUsers.begin(), allUsers.begin() + sampleSize};
+}
+
+// New function to write users to explore.dat
+void writeExploreFile(const std::vector<int>& users, const std::string& filename = "datasets/explore.dat") {
+    std::ofstream outFile(filename);
+    
+    if (!outFile.is_open()) {
+        std::cerr << "Error: Could not open file " << filename << " for writing!\n";
+        return;
+    }
+
+    for (int userId : users) {
+        outFile << userId << "\n";
+    }
+
+    outFile.close();
+    std::cout << "Successfully wrote " << users.size() << " users to " << filename << "\n";
+}
+
+int main() {
+    auto start = chrono::high_resolution_clock::now();
+
+    auto ppS = chrono::high_resolution_clock::now();
+
     DataPreprocessor ratings_file("kaggle-data/ratings.csv", "r");
     ratings_file.process_ratings();
-    cout << "Ratings processing: " << chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t_ratings).count() << " ms" << endl;
 
-    auto t_input = chrono::high_resolution_clock::now();
-    InputProcessor inputProcessor("datasets/input.dat");
+    auto ppE = chrono::high_resolution_clock::now();
+
+    auto umrS = chrono::high_resolution_clock::now();
+
+    InputProcessor inputProcessor;
     UsersAndMoviesData usersAndMovies;
     inputProcessor.process_input(usersAndMovies);
-    cout << "Input processing: " << chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t_input).count() << " ms" << endl;
 
-    auto t_movies = chrono::high_resolution_clock::now();
+    auto umrE = chrono::high_resolution_clock::now();
+
+    auto rmS = chrono::high_resolution_clock::now();
     MoviesData movies;
     MovieReader movieReader("kaggle-data/movies.csv", "r");
     movieReader.getMovies(movies);
-    cout << "Movies loading: " << chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t_movies).count() << " ms" << endl;
 
-    auto t_recommend = chrono::high_resolution_clock::now();
+    auto rmE = chrono::high_resolution_clock::now();
+
+    auto recS = chrono::high_resolution_clock::now();
+    
     Recommender recommender;
     recommender.generateRecommendations(usersAndMovies, movies);
-    cout << "Recommendations generation: " << chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t_recommend).count() << " ms" << endl;
 
-    cout << "Total time: " << chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t1).count() << " ms" << endl;
+    auto recE = chrono::high_resolution_clock::now();
+
+
+    auto progEnd = chrono::high_resolution_clock::now();
+    auto dur = chrono::duration_cast<chrono::milliseconds>(progEnd - start);
+
+
+    cout << "\n====== TIMES\n";
+    cout << "Time to pre process: "<< chrono::duration_cast<chrono::milliseconds>(ppS - ppE).count() << " ms" << endl;
+    cout << "Time to read users and movies: "<< chrono::duration_cast<chrono::milliseconds>(umrS - umrE).count() << " ms" << endl;
+    cout << "Time to read movies: " << chrono::duration_cast<chrono::milliseconds>(rmS - rmE).count() << " ms" << endl;
+    cout << "Time to recommend: " << chrono::duration_cast<chrono::milliseconds>(recS - recE).count() << " ms" << endl;
+
+    cout << "Total time: " << dur.count() << " ms" << endl;
+
     return 0;
 }
