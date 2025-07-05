@@ -263,6 +263,35 @@ O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
+### Comparativo de Performace de Recomendação 
+Analisando apenas o tempo que o algoritmo gasta, em média, para gerar uma única recomendação(desconsiderando tempos de pré-processamento, outros tipos de tratamento, etc) tem-se:
+
+
+<img src="imgs/comparativoMetodosRecomendacao.jpeg">
+
+### 🔍 Análise dos Resultados  
+
+#### **Cosseno (Mais rápido - 177 ms) - Algoritmo Escolhido**  
+- **Motivo da velocidade**:  
+  - Baseado em produto escalar e normas, operações altamente otimizadas.  
+  - Não requer cálculo de raízes quadradas.  
+- **Hardware**: Operações vetorizadas se beneficiam de paralelismo(posteriormente aplicado).  
+
+#### **Pearson (217 ms)**  
+- **Semelhança com Cosseno**, mas normalizado pela média.  
+- **Leve custo adicional** devido ao cálculo das médias.  
+
+#### **Manhattan (304 ms)**  
+- **Soma de diferenças absolutas**, sem operações complexas.  
+- **Mais lento que Cosseno/Pearson** devido a loops sequenciais.  
+
+#### **Euclidiano (330 ms)**  
+- **Envolve raiz quadrada**, o que aumenta o tempo.  
+
+#### **Jaccard (Mais lento - 358 ms)**  
+- **Operações sobre conjuntos** (interseção/uniao), menos eficientes.  
+- **Dimensionalidade**: algoritmos como Jaccard sofrem com alta dimensionalidade.  
+
 ### Geração de Recomendações
 
 
@@ -295,6 +324,10 @@ Outra medida que ajudou a reduzir bastante o tempo de execução do projeto foi 
 ### Mapeamento de Memória de arquivos
 
 O **mmap** (mapeamento de memória) é uma técnica em C/C++ que mapeia um arquivo diretamente na memória do processo, eliminando a necessidade de leituras e escritas repetitivas por meio de chamadas de sistema tradicionais como `read()` e `write()`. Ao usar `mmap`, o sistema operacional gerencia o carregamento sob demanda dos dados do arquivo em páginas de memória, permitindo acesso eficiente como se fossem arrays em RAM. Isso é especialmente vantajoso para processamento de **arquivos grandes**, pois evita cópias desnecessárias entre buffers do kernel e espaço de usuário, reduzindo sobrecarga e melhorando significativamente a performance. Além disso, o `mmap` permite operações de acesso aleatório eficientes e pode tirar proveito da paginação virtual do sistema, carregando apenas as partes do arquivo que são realmente acessadas, economizando recursos de I/O e memória.
+
+### MinHash + LSH + Multithreading (descontinuado)
+
+Foi testado o uso de MinHash + LSH para otimizar o cálculo de similaridade ao agrupar usuários 80% semelhantes e fornecer uma única recomendação para o conjunto, enquanto para usuários que não se encaixassem nessa métrica receberiam as recomendações individuais. Entretanto, em razão da esparcidade dos dados e da alta dimensionalidade do conjunto, o uso de MinHash + LSH + Multithreading se provou 50% pior que o uso apenas do cosseno (poucos usuários se provavam semelhantes, e o custo do cálculo dessa semelhança não compensava a otimização). Com a diminuição do threshold(porcentagem que define usuários como semelhantes) e aumento das bandas(para provocar mais colisões e, assim, encontrar mais users semelhantes) foi possível encontrar mais usuários semelhantes, em média, mas o tempo de execução piorou. Por essas razões, a combinação de MinHash + LSH + Multithreading se provou muito custosa e foi descontinuada.
 
 ## ⚙️ Fluxo do Programa
 
