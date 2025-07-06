@@ -33,7 +33,7 @@ As instruções mais detalhadas podem ser encontradas na seção <a href="#️-i
     - [Jaccard](#jaccard)
     - [Manhattan](#manhattan)
     - [Cosseno](#similaridade-de-cosseno)
-    - [MinHash + LSH + Multithreading (descontinuado)](##minhash--lsh--multithreading-descontinuado)
+    - [MinHash + LSH + Multithreading (descontinuado)](#minhash--lsh--multithreading-descontinuado)
     - [Geração de Recomendações](#geração-de-recomendações)
 - [⏳️ Otimizações](#️-otimizações)
 - [⚙️ Fluxo do Programa](#️-fluxo-do-programa)
