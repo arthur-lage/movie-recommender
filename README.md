@@ -262,6 +262,53 @@ O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado
 
 ### Similaridade de Cosseno
 
+A **similaridade de cosseno** é uma medida utilizada para avaliar o quão parecidos são dois vetores em um espaço de alta dimensão.  
+No contexto deste projeto, cada vetor representa um usuário, e cada dimensão representa a avaliação dada a um filme.  
+
+Essa medida é muito usada em **mineração de dados**, **sistemas de recomendação** e **processamento de linguagem natural**, por ser eficaz na comparação de perfis mesmo que eles tenham magnitudes diferentes.  
+
+
+#### Como funciona?
+
+Para entender a similaridade de cosseno, é importante entender dois conceitos:
+
+- **Produto escalar**: soma da multiplicação dos elementos correspondentes de dois vetores.  
+- **Norma (ou magnitude)**: comprimento do vetor, calculado com o teorema de Pitágoras.  
+
+A similaridade de cosseno é calculada da seguinte forma:
+
+    similaridade = (A ⋅ B) / (||A|| ⋅ ||B||)
+
+
+Onde:  
+
+- `A ⋅ B` é o **produto escalar** dos vetores (ex: notas dos usuários).  
+- `||A||` e `||B||` são as **normas** de A e B, ou seja, o comprimento dos vetores.  
+
+Essa fórmula nos dá o **cosseno do ângulo entre os vetores**.  
+Quanto mais próximos os vetores estiverem (em direção), maior a similaridade.
+
+
+
+#### Intervalo de Valores
+
+A similaridade de cosseno varia entre:
+
+- **1** → vetores idênticos (gostos idênticos)  
+- **0** → vetores ortogonais (sem relação)  
+- **-1** → vetores com direções opostas *(não ocorre aqui, pois não há notas negativas)*  
+
+
+#### Aplicação no Projeto
+
+No seu sistema de recomendação:
+
+- Cada **usuário é representado por um vetor de notas** (somente para os filmes que ele avaliou).  
+- A similaridade de cosseno é usada para **comparar o vetor do usuário-alvo com os vetores de todos os outros usuários**.  
+- Apenas os usuários com **similaridade maior que 0.2** são considerados **vizinhos relevantes**.  
+- As **recomendações são geradas com base nos filmes bem avaliados por esses usuários semelhantes**, mas que o usuário-alvo ainda não viu.  
+
+
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
 ### MinHash + LSH + Multithreading (descontinuado)
@@ -304,7 +351,109 @@ Analisando apenas o tempo que o algoritmo gasta, em média, para gerar uma únic
 
 ### Geração de Recomendações
 
+A etapa principal do projeto é a geração de recomendações. Essa parte acontece dentro da classe Recommender, nesse método:
+```
+void generateRecommendations(const UsersAndMoviesData& usersAndMovies, const MoviesData& movies);
+```
+ Esse método, utilizamos as avaliações feitas pelos usuários para prever quais filmes eles podem gostar, com base em gostos semelhantes de outros usuários.
 
+
+###  Etapas internas do processo
+
+#### 1.  Leitura dos usuários-alvo (`explore.dat`)
+
+* O sistema começa abrindo o arquivo datasets/explore.dat, que possui uma lista de IDs de usuários, um por linha.
+* Para cada linha do arquivo, o ID do usuário é guardado em um conjunto não ordenado chamado usersToRecommend
+* Esses são exatamente os usuários para os quais queremos criar recomendações.
+
+
+#### 2. Paralelismo com fila de tarefas
+
+* Criamos uma fila chamada userQueue, que recebe todos esses IDs de usuário.
+* Para agilizar o processo, o sistema inicia várias threads (o número delas depende da quantidade de CPUs disponíveis) para trabalhar em paralelo.
+* Cada thread executa uma função chamada worker(), que faz o seguinte:
+
+  1. Puxa um usuário da fila (userQueue), usando um mutex para garantir que ninguém interfira ao mesmo tempo.
+  2. Gera recomendações para esse usuário.
+  3. Escreve os resultados de forma segura e concorrente usando `mutexes`.
+
+
+#### 3. Cálculo de similaridade entre usuários
+
+Dentro da thread:
+
+* O sistema utiliza a função `computeCosineSimilarity(user1, user2, usersAndMovies)` para comparar o usuário que estamos analisando com todos os outros usuários cadastrados.
+* Essa função percorre os filmes que ambos os usuários avaliaram e realiza esse cálculo da similaridade:
+
+$$
+\text{similaridade} = \frac{\sum (nota_1 \cdot nota_2)}{\|user_1\| \cdot \|user_2\|}
+$$
+
+* As normas dos vetores de avaliações já foram calculadas previamente com a função `precomputeUserNorms()`), o que ajuda a deixar o processo mais rápido.
+* Somente os usuários cuja similaridade for maior que 0,2 são considerados relevantes.
+* O sistema mantém uma lista com até `K` usuários mais parecidos (no padrão, K é igual a 15), usando a técnica `partial_sort` para organizar esses dados.
+
+
+#### 4.  Previsão de notas para filmes não vistos
+
+* Para cada filme avaliado pelos usuários similares e que o usuário-alvo ainda não assistiu, o sistema calcula uma nota prevista:
+
+$$
+\text{nota prevista (filme)} = \frac{\sum (\text{nota do vizinho} \cdot \text{similaridade})}{\sum (\text{similaridade})}
+$$
+
+* Isso significa que:
+
+  * Se vários usuários próximos deram uma avaliação alta a um filme que o usuário-alvo ainda não viu,
+  * E esses usuários têm uma alta similaridade com ele,
+  * E esses usuários têm uma alta similaridade com ele.
+
+* Os dados são armazenados num `std::unordered_map<movie_id_t, std::pair<double, double>> predictions`, onde:
+
+  * `first`: somatório ponderado das notas.
+  * `second`: somatório das similaridades.
+
+
+#### 5.  Seleção dos melhores filmes
+
+* O sistema percorre o mapa `predictions`, calcula `nota prevista = first / second`, e armazena os pares `(movie_id, score)` em um `std::vector`.
+* Esse vetor é ordenado de forma decrescente pelos scores.
+* São selecionados os `NUMBER_OF_RECOMMENDATIONS_PER_USER` primeiros (padrão = 5).
+
+
+#### 6.  Escrita formatada das recomendações
+
+* Para cada recomendação, o sistema usa `MoviesData` para obter o título real do filme.
+* A saída formatada é semelhante a:
+
+```
+Recommendations for user 12345:
+
+The Matrix (1999) (Score: 4.98)
+Fight Club (1999) (Score: 4.85)
+The Godfather (1972) (Score: 4.80)
+...
+```
+
+* Esse conteúdo é escrito em buffer com `OutputManager.write(...)`.
+* Ao final, todas as threads finalizam, e o buffer é `flush()` no arquivo `outcome/output.txt`.
+
+
+###  Estruturas usadas
+
+* `UsersAndMoviesData`: mapeia usuário → conjunto de (filme, nota).
+* `MoviesData`: mapeia movie\_id → nome do filme.
+* `unordered_map<user_id_t, double> userNorms`: armazena a norma dos vetores dos usuários.
+* `queue`, `mutex`, `condition_variable`: controle concorrente de usuários sendo processados.
+* `OutputManager`: escrita segura e eficiente em disco.
+
+
+###  Por que esse método?
+
+* Escalável: processa milhões de avaliações com múltiplas threads.
+* Colaborativo: baseia-se em usuários reais com gostos parecidos.
+* Flexível: o limiar de similaridade e número de vizinhos são facilmente configuráveis.
+* Qualitativo: recomenda apenas filmes ainda não vistos pelo usuário.
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
@@ -338,6 +487,65 @@ O **mmap** (mapeamento de memória) é uma técnica em C/C++ que mapeia um arqui
 ## ⚙️ Fluxo do Programa
 
 <img src="/imgs/fluxograma.png"/>
+
+
+O programa funciona seguindo uma sequência bem organizada de etapas, começando pelo pré-processamento dos dados até chegar às recomendações personalizadas para cada usuário. O fluxograma mostra essa sequência de forma clara:
+
+
+### 1. main.cpp  
+O arquivo principal é quem coordena toda a execução do sistema. Ele cria os objetos necessários e chama os métodos que cuidam de cada fase do processo.  
+
+
+### 2. DataPreprocessor  
+É a classe responsável por ler o arquivo `ratings.csv`, que vem da base MovieLens, e fazer o pré-processamento dos dados.  
+
+Dentro dessa classe, há uma função chamada `process_ratings()`:
+
+- Ela começa lendo o arquivo CSV original, que contém milhões de avaliações.  
+- Depois, filtra apenas os usuários e filmes que têm pelo menos 50 avaliações.  
+- Também remove registros duplicados e quaisquer inconsistências nos dados.  
+- Por fim, gera um arquivo chamado `datasets/input.dat`, que será utilizado nas etapas seguintes do sistema.  
+
+
+### 3. InputProcessor  
+Esta é uma classe responsável por abrir o arquivo `input.dat`, que foi criado anteriormente, e carregá-lo na memória para uso.  
+
+A função `process_input(UsersAndMoviesData&)` lê todas as linhas do arquivo `input.dat` e constrói uma estrutura chamada `UsersAndMoviesData`.  
+Essa estrutura armazena informações sobre todos os usuários e os filmes que eles avaliaram, junto com as notas atribuídas a cada um deles.  
+
+
+### 4. MovieReader  
+Faz a leitura do arquivo `movies.csv`, que contém os títulos dos filmes.  
+
+A função `getMovies(MoviesData&)` mapeia cada identificador de filme (`movie_id`) para o título correspondente.  
+Ela preenche a estrutura `MoviesData` com esses dados, organizando as informações de forma acessível para o restante do programa.  
+
+
+### 5. Recommender  
+Ela começa lendo o arquivo `datasets/explore.dat`, que contém os IDs dos usuários que irão receber as recomendações.  
+
+- Depois, calcula a similaridade entre os usuários usando o método do cosseno.  
+- Em seguida, identifica os K usuários mais semelhantes a cada usuário alvo.  
+- Com base nisso, seleciona filmes que o usuário ainda não assistiu, mas que foram bem avaliados pelos usuários semelhantes.  
+- Para cada usuário, gera até cinco recomendações, de acordo com o que está definido no arquivo `config.hpp`.  
+- Por fim, grava todas as recomendações no arquivo `outcome/output.txt`.  
+
+
+### 6. Arquivo de saída: outcome/output.txt  
+O arquivo gerado ao final contém as sugestões personalizadas para cada usuário listado em `datasets/explore.dat`.  
+Cada grupo de recomendações segue este formato:  
+
+Recommendations for user <user_id>
+
+<movie_title_1> (Score: <nota>)
+
+<movie_title_2> (Score: <nota>)
+
+<movie_title_3> (Score: <nota>)
+
+<movie_title_4> (Score: <nota>)
+
+<movie_title_5> (Score: <nota>)
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
@@ -498,6 +706,111 @@ Arquivos como **Makefile** automatizam a compilação, **.gitignore** exclui arq
 ## 💻️ Classes, funções e configurações
 
 Uma descrição sobre as partes essenciais do programa:
+
+📁 **config.hpp**  
+No arquivo `config.hpp`, você encontra algumas constantes globais que ajudam a definir como o sistema de recomendação funciona:  
+
+- `MININUM_REVIEW_COUNT_PER_USER = 50`: essa é a quantidade mínima de avaliações que um usuário precisa ter para ser considerado no sistema.  
+- `MININUM_REVIEW_COUNT_PER_MOVIE = 50`: essa é a quantidade mínima de avaliações que um filme deve ter para entrar na lista de considerados.  
+- `NUMBER_OF_RECOMMENDATIONS_PER_USER = 5`: esse é o número de recomendações que o sistema gera para cada usuário.  
+
+📁 **custom_types.hpp**  
+Já no arquivo `custom_types.hpp`, estão definidas algumas estruturas e apelidos que o sistema usa o tempo todo:  
+
+- `user_id_t` e `movie_id_t`: esses são apelidos para o tipo `int`, usados para tornar o código mais fácil de entender.  
+
+### struct Rating  
+Este trecho descreve alguns componentes relacionados à avaliação de filmes:  
+
+- Uma estrutura que representa a avaliação de um filme, contendo dois campos: o ID do filme (`movie`) e a nota dada (`score`).  
+- A sobrecarga do operador `==` para que as avaliações possam ser comparadas com base no ID do filme.  
+- Uma estrutura de hash personalizada criada para permitir o uso de `Rating` em um conjunto não ordenado (`unordered_set`).  
+
+Além disso, há dois tipos de dados definidos:  
+
+- `MoviesData`: um mapa que relaciona o ID do filme (`movie_id_t`) aos seus títulos, que são `strings`.  
+- `UsersAndMoviesData`: um mapa que associa o ID do usuário (`user_id_t`) a um conjunto de avaliações (`Rating`).  
+
+📁 **file_handler.hpp / file_handler.cpp**  
+Aqui encontramos a classe básica responsável por lidar com arquivos:  
+
+### Classe FileHandler  
+- Possui um atributo `FILE*` chamado `file`, que é o ponteiro para o arquivo.  
+- Seu construtor abre o arquivo.  
+- O destrutor fecha o arquivo automaticamente ao final.  
+- Há também o método `close()`, que permite encerrar a leitura do arquivo manualmente.  
+
+📁 **data_preprocessor.hpp / data_preprocessor.cpp**  
+Temos a parte que cuida do pré-processamento dos dados:  
+
+### Classe DataPreprocessor (que herda de FileHandler)  
+- O construtor recebe o nome do arquivo e o modo de abertura.  
+- O método `process_ratings()`:  
+  - Lê o arquivo `ratings.csv` usando um buffer otimizado para melhorar o desempenho.  
+  - Filtra apenas os usuários que têm pelo menos 50 avaliações e os filmes com pelo menos 50 avaliações.  
+  - Remove linhas inválidas e gera um arquivo chamado `input.dat` nesse formato:  
+    ```
+    user_id item1:rating1 item2:rating2 ...
+    ```  
+
+📁 **input_processor.hpp / input_processor.cpp**  
+Nesse arquivo, está a classe responsável por ler os dados que já foram pré-processados:  
+
+### Classe InputProcessor  
+- `process_input(UsersAndMoviesData&)`:  
+  - Utiliza `mmap` para ler o arquivo `input.dat` de forma rápida.  
+  - Divide o arquivo em partes para serem processadas por diferentes threads.  
+  - Preenche o mapa `UsersAndMoviesData` com as avaliações feitas por cada usuário.  
+
+📁 **movie_reader.hpp / movie_reader.cpp**  
+Aqui temos o leitor que busca os nomes dos filmes:  
+
+### Classe MovieReader (que herda de FileHandler)  
+- `getMovies(MoviesData&)`:  
+  - Lê o arquivo `movies.csv`.  
+  - Associa cada ID de filme ao seu título correspondente.  
+
+📁 **output_manager.hpp / output_manager.cpp**  
+É onde ocorre a escrita do resultado final:  
+
+### Classe OutputManager  
+- `openFile()` / `openInOutcome()`: abre arquivos para escrita.  
+- `write(const char*, size_t)`: escreve os dados no buffer.  
+- `flush()`: envia o conteúdo do buffer para o disco.  
+- `closeFile()`: fecha o arquivo.  
+- `getBufferSize()`, `isFileOpen()`: funções auxiliares para verificar o estado.  
+
+📁 **recommender.hpp / recommender.cpp**  
+Encontramos a parte principal do sistema de recomendação:  
+
+### Classe Recommender  
+- `generateRecommendations(const UsersAndMoviesData&, const MoviesData&)`:  
+  - Carrega os usuários do arquivo `explore.dat`.  
+  - Para cada usuário:  
+    - Identifica os 15 usuários mais semelhantes, com uma similaridade do cosseno maior que 0,2.  
+    - Considera os filmes bem avaliados por esses usuários, que o usuário alvo ainda não viu.  
+    - Calcula uma média ponderada dessas avaliações, levando em conta a similaridade.  
+    - Seleciona os 5 melhores filmes e grava no arquivo `output.dat`.  
+    - Utiliza threads para processar vários usuários ao mesmo tempo, acelerando o processamento.  
+
+- `precomputeUserNorms()`: calcula e guarda a norma (ou seja, o comprimento) de cada vetor de avaliações dos usuários.  
+- `computeCosineSimilarity(u1, u2, data)`: calcula e devolve a similaridade do cosseno entre dois usuários com base nos dados disponíveis.  
+
+📁 **utils.hpp**  
+Aqui estão algumas funções auxiliares:  
+
+- `fast_atoi`: converte rapidamente uma string de caracteres para um número inteiro.  
+- `fast_atof`: faz a conversão rápida de uma string de caracteres para um número `float`.  
+
+📁 **main.cpp**  
+No arquivo `main.cpp`, está o controle principal de como o programa funciona:  
+
+Primeiro, ele cria um objeto `DataPreprocessor` e processa o arquivo `ratings.csv`.  
+Depois, cria um `InputProcessor` para carregar o arquivo `input.dat` na estrutura `usersAndMovies`.  
+Em seguida, lê o arquivo `movies.csv` usando o `MovieReader` e preenche a lista de filmes.  
+Após isso, instancia um `Recommender` e chama o método `generateRecommendations` para gerar as recomendações.  
+Por fim, mede quanto tempo cada etapa levou e exibe essas informações no terminal.  
+
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
