@@ -1,13 +1,14 @@
 #pragma once
 
+#include "file_handler.hpp"
 #include "custom_types.hpp"
 
 #include <unordered_set>
 
-class InputProcessor {
+class InputProcessor : public FileHandler {
     private:
 
     public:
-        InputProcessor();
+        InputProcessor(const char* filename);
         void process_input(UsersAndMoviesData& usersAndMovies);
 };

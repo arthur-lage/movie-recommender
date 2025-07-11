@@ -56,10 +56,8 @@ void DataPreprocessor::process_ratings() {
     vector<RatingEntry> entries;
     entries.reserve(25000000);
 
-    // Buffer de leitura alinhado
-    vector<char> buffer(READ_BUFFER_SIZE + 64); // +64 para alinhamento
+    vector<char> buffer(READ_BUFFER_SIZE + 64);
     char* aligned_buffer = buffer.data();
-    // Ajustar alinhamento para 64 bytes
     if (reinterpret_cast<uintptr_t>(aligned_buffer) % 64 != 0) {
         aligned_buffer += 64 - (reinterpret_cast<uintptr_t>(aligned_buffer) % 64);
     }
@@ -68,16 +66,12 @@ void DataPreprocessor::process_ratings() {
     size_t bytes_remaining = 0;
     bool first_line = true;
 
-    // Fase 1: Leitura e parsing dos dados
     while (true) {
-        // Recarregar buffer se necessário
         if (bytes_remaining < 256) {
-            // Mover dados restantes para o início
             if (bytes_remaining > 0) {
                 memmove(aligned_buffer, current, bytes_remaining);
             }
-            
-            // Ler novos dados
+
             size_t bytes_read = fread(
                 aligned_buffer + bytes_remaining,
                 1,
@@ -93,10 +87,8 @@ void DataPreprocessor::process_ratings() {
             current = aligned_buffer;
         }
 
-        // Encontrar próxima quebra de linha
         char* line_end = static_cast<char*>(memchr(current, '\n', bytes_remaining));
         if (!line_end) {
-            // Se não encontrou, mover restante para início e continuar
             if (bytes_remaining > 0) {
                 memmove(aligned_buffer, current, bytes_remaining);
             }
@@ -112,11 +104,9 @@ void DataPreprocessor::process_ratings() {
             continue;
         }
         
-        // Terminar a linha atual
         *line_end = '\0';
         size_t line_length = line_end - current + 1;
         
-        // Pular cabeçalho
         if (first_line) {
             first_line = false;
             bytes_remaining -= line_length;
@@ -124,35 +114,29 @@ void DataPreprocessor::process_ratings() {
             continue;
         }
 
-        // Variáveis de parsing (inicializadas antes de qualquer condicional)
         int user = 0;
         int movie = 0;
         float rating = 0.0f;
         bool valid_line = true;
         const char* p = current;
 
-        // Parse do user ID
         user = fast_atoi(p);
         if (*p != ',') {
             valid_line = false;
         } else {
-            p++; // Pular vírgula
+            p++;
             
-            // Parse do movie ID
             movie = fast_atoi(p);
             if (*p != ',') {
                 valid_line = false;
             } else {
-                p++; // Pular vírgula
+                p++;
                 
-                // Parse da avaliação
                 rating = fast_atof(p);
             }
         }
 
-        // Processar linha válida
         if (valid_line) {
-            // Atualizar contadores
             if (static_cast<size_t>(movie) < movie_counter.size()) {
                 movie_counter[movie]++;
             }
@@ -160,16 +144,13 @@ void DataPreprocessor::process_ratings() {
                 user_counter[user]++;
             }
             
-            // Armazenar entrada
             entries.push_back({user, movie, rating});
         }
 
-        // Atualizar ponteiros do buffer
         bytes_remaining -= line_length;
         current = line_end + 1;
     }
 
-    // Fase 2: Filtragem de filmes válidos
     vector<bool> valid_movie(movie_counter.size(), false);
     for (size_t i = 0; i < movie_counter.size(); ++i) {
         if (movie_counter[i] >= MININUM_REVIEW_COUNT_PER_MOVIE) {
@@ -177,7 +158,6 @@ void DataPreprocessor::process_ratings() {
         }
     }
 
-    // Fase 3: Pré-processamento de usuários válidos
     vector<uint16_t> user_counter_valid(user_counter.size(), 0);
     vector<RatingEntry> valid_entries;
     valid_entries.reserve(entries.size());
@@ -229,11 +209,11 @@ void DataPreprocessor::process_ratings() {
         ptr = write_int(ptr, current_user);
         
         while (it != valid_entries.end() && it->user == current_user) {
-            *ptr++ = ' '; // Separador
+            *ptr++ = ' ';
             
             ptr = write_int(ptr, it->movie);
             
-            *ptr++ = ':'; // Separador
+            *ptr++ = ':';
 
             ptr = write_rating(ptr, it->rating);
             

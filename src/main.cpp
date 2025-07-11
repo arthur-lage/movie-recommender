@@ -26,7 +26,7 @@ int main() {
 
     auto umrS = chrono::high_resolution_clock::now();
 
-    InputProcessor inputProcessor;
+    InputProcessor inputProcessor("datasets/input.dat");
     UsersAndMoviesData usersAndMovies;
     inputProcessor.process_input(usersAndMovies);
 
@@ -38,7 +38,6 @@ int main() {
     movieReader.getMovies(movies);
 
     auto rmE = chrono::high_resolution_clock::now();
-
     auto recS = chrono::high_resolution_clock::now();
     
     Recommender recommender;
@@ -46,10 +45,8 @@ int main() {
 
     auto recE = chrono::high_resolution_clock::now();
 
-
     auto progEnd = chrono::high_resolution_clock::now();
     auto dur = chrono::duration_cast<chrono::milliseconds>(progEnd - start);
-
 
     cout << "\n====== TIMES\n";
     cout << "Time to pre process: "<< chrono::duration_cast<chrono::milliseconds>(ppS - ppE).count() << " ms" << endl;

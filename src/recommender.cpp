@@ -66,6 +66,8 @@ void Recommender::generateRecommendations(const UsersAndMoviesData &usersAndMovi
                                                 const MoviesData &movies)
 {
     OutputManager outputManager;
+    std::vector<uint64_t> genDurations;
+    std::vector<uint64_t> writeDurations;
 
     outputManager.openInOutcome("output.txt");
     std::ostringstream buffer;

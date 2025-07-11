@@ -9,7 +9,7 @@ inline int fast_atoi(const char*& p) {
     return x;
 }
 
-inline float fast_atof(const char* p) {
+inline float fast_atof(const char*& p) {
     int int_part = 0;
     int frac_part = 0;
     int frac_digits = 0;

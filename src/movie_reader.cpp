@@ -30,12 +30,12 @@ void MovieReader::getMovies (MoviesData& movies) {
         
         ptr = end + 1;
         if (*ptr == '"') {
-            ptr++;
+            ptr++; 
             end = strchr(ptr, '"');
-            if (!end) continue;
+            if (!end) continue; 
             *end = '\0';
-            end++;
-            if (*end != ',') continue;
+            end++; 
+            if (*end != ',') continue; 
         } else {
             end = strchr(ptr, ',');
             if (!end) continue;
