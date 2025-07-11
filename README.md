@@ -41,6 +41,7 @@ As instruções mais detalhadas podem ser encontradas na seção <a href="#️-i
 - [📂 Estrutura do Projeto](#-estrutura-do-projeto)
 - [💻️ Classes, funções e configurações](#️-classes-funções-e-configurações)
 - [🧪 Ambiente de Testes](#-ambiente-de-testes)
+- [📊 Resultados](#-resultados)
 - [🏁 Conclusão](#-conclusão)
 - [⬇️ Instruções de Uso](#️-instruções-de-uso)
 - [✉️ Contato](#️-contato)
@@ -834,6 +835,8 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
 ```
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+
+## 📊 Resultados
 
 ## 🏁 Conclusão
 
