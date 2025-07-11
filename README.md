@@ -998,9 +998,14 @@ outcome/output.txt
 ## 📜 Referências
 
 <ol>
-  <li>Referencia 1</li>
-  <li>Referencia 2</li>
-  <li>Referencia 3</li>
-  <li>Referencia 4</li>
-  <li>Referencia 5</li>
+  <li>A tutorial on modern multithreading and concurrency in C++. (n.d.). Retrieved June 12, 2025, 2025, from (https://www.educative.io/blog/modern-multithreading-and-concurrency-in-cpp)</li>
+  <li>Coeficiente de correlação de Pearson – Wikipédia, a enciclopédia livre. (n.d.). Retrieved May 28, 2025, from (https://pt.wikipedia.org/wiki/Coeficiente_de_correla%C3%A7%C3%A3o_de_Pearson)</li>
+  <li>Correlação de Pearson: o que é e como interpretar? (n.d.). Retrieved May 29, 2025, from (https://www.blog.psicometriaonline.com.br/o-que-e-correlacao-de-pearson/)</li>
+  <li>Distância euclidiana – Wikipédia, a enciclopédia livre. (n.d.). Retrieved May 15, 2025, from (https://pt.wikipedia.org/wiki/Dist%C3%A2ncia_euclidiana)</li>
+  <li>Entendendo a distância euclidiana: Da teoria à prática | DataCamp. (n.d.). Retrieved May 15, 2025, from (https://www.datacamp.com/pt/tutorial/euclidean-distance)</li>
+  <li>Hashing sensível à localidade - Wikipédia. (n.d.). Retrieved June 28, 2025, from (https://en-m-wikipedia-org.translate.goog/wiki/Locality-sensitive_hashing)</li>
+  <li>Índice Jaccard – Wikipédia, a enciclopédia livre. (n.d.). Retrieved June 3, 2025, from (https://pt.wikipedia.org/wiki/%C3%8Dndice_Jaccard)</li>
+  <li>O que é a distância de Manhattan? | DataCamp. (n.d.). Retrieved May 25, 2025, from (https://www.datacamp.com/pt/tutorial/manhattan-distance)</li>
+  <li>Similaridade de Jaccard – LearnDataSci. (n.d.). Retrieved June 3, 2025, from (https://www-learndatasci-com.translate.goog/glossary/jaccard-similarity/)</li>
+  <li>Similaridade por cosseno – Wikipédia, a enciclopédia livre. (n.d.). Retrieved June 1, 2025, from (https://pt.wikipedia.org/wiki/Similaridade_por_cosseno)</li>
 </ol>
