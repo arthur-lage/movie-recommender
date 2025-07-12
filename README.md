@@ -58,7 +58,7 @@ Nesse estudo, foi utilizada a base de dados gratuita "MovieLens 25M", que dispon
 
 Dessa maneira, a partir dos dados fornecidos pelo serviço e por meio da similaridade de cossenos, que permite relacionar as avaliações para encontrar usuários semelhantes de forma rápida, foi construido esse algoritmo de recomendação de filmes. Os detalhes de implementação e execução serão detalhados ao longo dessa documentação.
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumario">voltar ao topo</a>)</p>
 
 ## 📝 Metodologia
 
