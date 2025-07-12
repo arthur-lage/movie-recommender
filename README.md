@@ -836,9 +836,15 @@ Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
 
 <p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
 
-## 📊 Resultados
-
 ## 🏁 Conclusão
+
+O desenvolvimento e a melhoria do sistema de recomendação de filmes em C++, como mostramos neste trabalho, mostram o quão eficaz e flexível é usar filtragem colaborativa baseada em similaridade para resolver problemas complexos com grandes volumes de dados. As otimizações que implementamos, como o uso de multithreading, mapeamento de memória (mmap) e a troca de funções mais lentas da STL por versões mais rápidas em C, trouxeram melhorias importantes no desempenho e na eficiência do sistema.
+
+Optar pela similaridade de cosseno como método principal de recomendação reforça a confiabilidade da solução, pois ela oferece resultados consistentes mesmo em situações com muita esparsidade e alta dimensionalidade, como na base MovieLens 25M. Além disso, o uso de estruturas eficientes, como unordered_map, buffers manuais e pré-cálculos de normas, ajudou a reduzir bastante o tempo de processamento, tornando o sistema mais escalável e viável para uso em situações reais.
+
+Os testes que realizamos mostraram que, usando várias threads e processamento simultâneo, conseguimos gerar recomendações para dezenas de usuários em apenas alguns segundos. Isso confirmou que a arquitetura que propusemos é eficiente. O projeto também revelou, com a combinação de algoritmos, estruturas de dados e pequenas otimizações, é possível obter resultados muito bons em C++, mesmo com conjuntos de dados enormes.
+
+Esse trabalho abre espaço para futuras melhorias, como a inclusão de métodos híbridos, o uso de modelos de aprendizado de máquina e a adaptação para ambientes distribuídos. Com o desenvolvimento contínuo dessa base, podemos avançar na criação de sistemas de recomendação cada vez mais rápidos, precisos e capazes de atender às necessidades atuais da ciência de dados.
 
 ## ⬇️ Instruções de Uso
 
