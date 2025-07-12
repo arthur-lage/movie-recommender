@@ -257,7 +257,7 @@ O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado
 - **getRecommendations**: Gera recomendações de filmes para o usuário-alvo, baseado nos similares. Para cada filme que o usuário-alvo ainda não viu, acumula uma média ponderada das notas dos usuários similares. Peso = 1 / (1 + distância) → mais próximo = maior peso. Retorna uma lista ordenada com os filmes recomendados e suas pontuações estimadas.
 - **generateRecommendations**: Principal função que é responsavel por lê os usuários a serem recomendados, onde para cada usuário encontra usuários similares (findSimilarUsers), gera as recomendações (getRecommendations) e exibe elas medindo o tempo de execução de cada recomendação e calcula o tempo médio no final.
 
-### Similaridade de Cosseno
+#### Similaridade de Cosseno
 
 A **similaridade de cosseno** é uma medida utilizada para avaliar o quão parecidos são dois vetores em um espaço de alta dimensão.  
 No contexto deste projeto, cada vetor representa um usuário, e cada dimensão representa a avaliação dada a um filme.  
@@ -265,7 +265,7 @@ No contexto deste projeto, cada vetor representa um usuário, e cada dimensão r
 Essa medida é muito usada em **mineração de dados**, **sistemas de recomendação** e **processamento de linguagem natural**, por ser eficaz na comparação de perfis mesmo que eles tenham magnitudes diferentes.  
 
 
-#### Como funciona?
+##### Como funciona?
 
 Para entender a similaridade de cosseno, é importante entender dois conceitos:
 
@@ -287,7 +287,7 @@ Quanto mais próximos os vetores estiverem (em direção), maior a similaridade.
 
 
 
-#### Intervalo de Valores
+##### Intervalo de Valores
 
 A similaridade de cosseno varia entre:
 
@@ -296,7 +296,7 @@ A similaridade de cosseno varia entre:
 - **-1** → vetores com direções opostas *(não ocorre aqui, pois não há notas negativas)*  
 
 
-#### Aplicação no Projeto
+##### Aplicação no Projeto
 
 No seu sistema de recomendação:
 
