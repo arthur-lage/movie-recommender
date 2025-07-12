@@ -58,7 +58,7 @@ Nesse estudo, foi utilizada a base de dados gratuita "MovieLens 25M", que dispon
 
 Dessa maneira, a partir dos dados fornecidos pelo serviço e por meio da similaridade de cossenos, que permite relacionar as avaliações para encontrar usuários semelhantes de forma rápida, foi construido esse algoritmo de recomendação de filmes. Os detalhes de implementação e execução serão detalhados ao longo dessa documentação.
 
-<p align="right">(<a href="#-sumario">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
 ## 📝 Metodologia
 
@@ -114,7 +114,7 @@ Captura as informações desejadas, salvando-as em estruturas de dados próprias
 
 Elementos essenciais nessa etapa foram [Multithreading](#paralelização-multithreading) e [Mapeamento de Memória](#mapeamento-de-memória-de-arquivos), que permitiram uma grande redução no tempo de execução. O mapeamento de memória evita, ao carregar o arquivo para a memória, que muitos acessos em disco sejam feitos, pois demandam muito tempo para serem executados em grandes quantidades. Além desse fator, o multithreading permite que vários usuários sejam processados ao mesmo tempo, ao invés de lidar com um de cada vez. Isso permitiu que reduzíssimos o tempo de execução de 1955 ms, para em média 270ms.
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
 ### Métodos de recomendação
 
@@ -158,7 +158,7 @@ Para gerar recomendações para o usuário 1:
 
 Média de tempo para gerar recomendações para um usuário com esse método (10 testes para os mesmos usuários aleatórios): 330.28 milisegundos.
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
 #### Correlação de Pearson
 
@@ -176,7 +176,7 @@ Como funciona o cálculo: raiz da soma dos produtos dos desvios dividida pelo pr
 <img src="imgs/pearsonFormula.png"><img> <br>
 TEMPO: Person levou em média 617,6 ms para gerar 1 recomendação
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
 #### Jaccard
 
@@ -224,7 +224,7 @@ Processamento para o Usuário 1
   - Filmes do Usuário 3 não vistos pelo Usuário 1: {121, 212}
   - Como só tem um usuário similar (Usuário 3), ambos os filmes são recomendados com peso 1.
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
 #### Manhattan
 
@@ -245,7 +245,7 @@ Diferentemente da distância de cosseno, que não satisfaz a desigualdade triang
 - Em estruturas de dados como árvores métricas, essas propriedades permitem pesquisas mais rápidas do vizinho mais próximo.
 - No machine learning, os algoritmos que se baseiam em métricas de distância (como k-nearest neighbors) podem aproveitar essas propriedades para obter garantias teóricas e implementações eficientes.
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
   
 ##### Como código está implementado
 
@@ -305,7 +305,7 @@ No seu sistema de recomendação:
 - As **recomendações são geradas com base nos filmes bem avaliados por esses usuários semelhantes**, mas que o usuário-alvo ainda não viu.  
 
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
 ### MinHash + LSH + Multithreading (descontinuado)
 
@@ -451,7 +451,7 @@ The Godfather (1972) (Score: 4.80)
 * Flexível: o limiar de similaridade e número de vizinhos são facilmente configuráveis.
 * Qualitativo: recomenda apenas filmes ainda não vistos pelo usuário.
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
 ## ⏳️ Otimizações
 
@@ -543,7 +543,7 @@ Recommendations for user <user_id>
 
 <movie_title_5> (Score: <nota>)
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
 ## 📚️ Bibliotecas
 
@@ -640,7 +640,7 @@ Além das bibliotecas criadas para o projeto, foram utilizadas as seguintes bibl
 - **`<cctype>`**  
   Classificação de caracteres (`isalpha`, `isdigit`).
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
 ## 📂 Estrutura do Projeto
 
@@ -808,7 +808,7 @@ Após isso, instancia um `Recommender` e chama o método `generateRecommendation
 Por fim, mede quanto tempo cada etapa levou e exibe essas informações no terminal.  
 
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
 ## 🧪 Ambiente de Testes
 
@@ -829,7 +829,7 @@ G++ (Compilador C++): gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04)
 Makefile: GNU Make 4.3 Built for x86_64-pc-linux-gnu
 ```
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
 ## 🏁 Conclusão
 
@@ -907,6 +907,8 @@ O resultado das recomendações serão gerados no caminho:
 ```bash
 outcome/output.txt
 ```
+
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
 ## ✉️ Contato
 
@@ -997,7 +999,7 @@ outcome/output.txt
 </div>
 <br>
 
-<p align="right">(<a href="#readme-topo">voltar ao topo</a>)</p>
+<p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
 ## 📜 Referências
 
