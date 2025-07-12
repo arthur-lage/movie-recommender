@@ -349,11 +349,11 @@ Foi testado o uso de MinHash + LSH para otimizar o cálculo de similaridade ao a
 
 ### Geração de Recomendações
 
-A etapa principal do projeto é a geração de recomendações. Essa parte acontece dentro da classe Recommender, nesse método:
+A etapa principal do projeto é a geração de recomendações. Essa parte acontece dentro da classe Recommender, no método:
 ```
 void generateRecommendations(const UsersAndMoviesData& usersAndMovies, const MoviesData& movies);
 ```
- Esse método, utilizamos as avaliações feitas pelos usuários para prever quais filmes eles podem gostar, com base em gostos semelhantes de outros usuários.
+Nele, utilizamos as avaliações feitas pelos usuários para prever quais filmes eles podem gostar, com base em gostos semelhantes de outros usuários.
 
 
 ###  Etapas internas do processo
