@@ -41,7 +41,6 @@ As instruções mais detalhadas podem ser encontradas na seção <a href="#️-i
 - [📂 Estrutura do Projeto](#-estrutura-do-projeto)
 - [💻️ Classes, funções e configurações](#️-classes-funções-e-configurações)
 - [🧪 Ambiente de Testes](#-ambiente-de-testes)
-- [📊 Resultados](#-resultados)
 - [🏁 Conclusão](#-conclusão)
 - [⬇️ Instruções de Uso](#️-instruções-de-uso)
 - [✉️ Contato](#️-contato)
@@ -82,9 +81,9 @@ Por isso, decidimos tentar de outra maneira, com o objetivo de tornar o programa
 
 #### Segunda abordagem
 
-Assim, ao invés de usar ifstream, usamos agora o FILE* da linguagem C, que apesar de ter uma implementação menos simples, permite com que lidemos com o arquivo de forma bem mais rápida. Além disso, utilizamos vetores de char ao invés de strings, e funções do C, como strlen, strtol, strtof, que tem um desempenho bem maior que as funções de string do C++.
+Assim, na segunda abordagem, ao invés de usar _ifstream_, usamos agora o FILE* da linguagem C, que apesar de ter uma implementação menos simples, permite com que lidemos com o arquivo de forma bem mais rápida. Além disso, utilizamos vetores de char ao invés de strings, e funções do C, como _strlen_, _strtol_, _strtof_, que tem um desempenho bem maior que as funções de string do C++.
 
-Outra mudança importante foi substituir os vetores por estruturas que permitissem acesso mais rápido, como unordered_map e unordered_set, além de facilitarem a verificação de que os seus registros são únicos.
+Outra mudança importante foi substituir os vetores por estruturas que permitissem acesso mais rápido, como _unordered_map_ e _unordered_set_, além de facilitarem a verificação de que os seus registros são únicos.
 
 [Versão dessa função](https://github.com/arthur-lage/movie-recommender/blob/2d7e87200a712fd513e8bd70e9829c681560a816/src/input_preprocessor.cpp#L43)
 
@@ -92,15 +91,11 @@ Outra mudança importante foi substituir os vetores por estruturas que permitiss
 
 Com o fito de obter a melhor performance possível, fizemos algumas substituições principais nessa parte do programa:
 
-- 1. Uso de funções customizadas para conversão de strings para int e float, que permite uma transformação mais rápida com menos overhead.
+Utilizamos algumas funções customizadas para a conversão de strings para int e float, o que permite uma transformação mais rápida com menos overhead. Além de elaborarmos leitura e escrita com buffer, para que ao invés de ler uma linha por vez, essa leitura seria efetuada em blocos, diminuindo o número de operações em disco, o que demanda mais tempo.
 
-- 2. Reservar uma quantidade suficiente de memória para armazenar todos os usuários e filmes, evitando que o programa precise gastar tempo realocando memória
+Outra substituição feita foi reservar uma quantidade suficiente de memória para armazenar todos os usuários e filmes, evitando que o programa precise gastar tempo realocando memória. Usamos também estruturas para salvar e comparar dados para fazer os filtros, para evitar percorrer o arquivo mais de uma vez.
 
-- 3. Leitura e escrita com buffer, para ao invés de ler uma linha por vez, efetuar uma leitura em blocos, diminuindo as operações de acesso em disco que demandam mais tempo.
-
-- 4. Usar estruturas para salvar e comparar dados para fazer os filtros, para evitar percorrer o arquivo mais de uma vez
-
-- 5. Alinhamento da memória [Linha 150](https://github.com/arthur-lage/movie-recommender/blob/f878c0861f5f62adb5a1959ee6716943b371a155/src/data_preprocessor.cpp#L150): Os novos processadores conseguem operar memória de forma mais eficiente quando os dados estão alinhados, e por isso, a falta de alinhamento no acesso pode causar penalidades na performance. Por isso é feito um ajuste de 64 bytes.
+Além de que na [Linha 150](https://github.com/arthur-lage/movie-recommender/blob/f878c0861f5f62adb5a1959ee6716943b371a155/src/data_preprocessor.cpp#L150) foi feito um ajuste no alinhamento da memória. Os novos processadores conseguem operar memória de maneira mais eficiente quando os dados estão alinhados, e por isso, a falta de alinhamento no acesso pode causar penalidades na performance. Por isso é feito um ajuste de 64 bytes.
 
 [Versão final do código](https://github.com/arthur-lage/movie-recommender/blob/f878c0861f5f62adb5a1959ee6716943b371a155/src/data_preprocessor.cpp#L18)
 
@@ -126,11 +121,11 @@ Elementos essenciais nessa etapa foram [Multithreading](#paralelização-multith
 Para esse projeto, testamos diferentes métodos de gerar recomendações, com o objetivo de encontrar um que possuísse melhor desempenho para o programa.
 Foram testadas as seguintes estratégias:
 
-- Distância euclidiana 
-- Similaridade de Cossenos
-- Correlação de Pearson
-- Jaccard
-- Manhattan
+- **Distância euclidiana** 
+- **Similaridade de Cossenos**
+- **Correlação de Pearson**
+- **Jaccard**
+- **Manhattan**
 
 Abaixo está uma breve descrição sobre esses métodos, e a performance média que obtivemos nos testes.
 
@@ -255,11 +250,11 @@ Diferentemente da distância de cosseno, que não satisfaz a desigualdade triang
 ##### Como código está implementado
 
 O arquivo recommender_manhattan é onde o algoritmo manhattan está implementado.
-- read_explore_file: Lê o arquivo datasets/explore.dat para identificar os usuários que devem receber recomendações e armazena os IDs no unordered_set<int> usersToRecommend.
-- computeDistance: Calcula a distância(similiaridade) de Manhattan entre dois usuários, fazendo a soma das diferenças absolutas das notas dadas aos mesmos filmes (avaliados por ambos). Quando não há filmes em comum, retorna INFINITY (sem similaridade).
-- *findSimilarUsers:*Recebe um usuário-alvo e os dados de avaliações de todos os usuários, com isso compara o usuário-alvo com todos os outros, usando computeDistance e depois ordena os usuários com a menor distância retornando os mais proximos.
-- getRecommendations: Gera recomendações de filmes para o usuário-alvo, baseado nos similares. Para cada filme que o usuário-alvo ainda não viu, acumula uma média ponderada das notas dos usuários similares. Peso = 1 / (1 + distância) → mais próximo = maior peso. Retorna uma lista ordenada com os filmes recomendados e suas pontuações estimadas.
-- generateRecommendations: Principal função que é responsavel por lê os usuários a serem recomendados, onde para cada usuário encontra usuários similares (findSimilarUsers), gera as recomendações(getRecommendations) e exibe elas medindo o tempo de execução de cada recomendação e calcula o tempo médio no final.
+- **read_explore_file**: Lê o arquivo datasets/explore.dat para identificar os usuários que devem receber recomendações e armazena os IDs no unordered_set<int> usersToRecommend.
+- **computeDistance**: Calcula a distância(similiaridade) de Manhattan entre dois usuários, fazendo a soma das diferenças absolutas das notas dadas aos mesmos filmes (avaliados por ambos). Quando não há filmes em comum, retorna INFINITY (sem similaridade).
+- **findSimilarUsers**: Recebe um usuário-alvo e os dados de avaliações de todos os usuários, com isso compara o usuário-alvo com todos os outros, usando computeDistance e depois ordena os usuários com a menor distância retornando os mais proximos.
+- **getRecommendations**: Gera recomendações de filmes para o usuário-alvo, baseado nos similares. Para cada filme que o usuário-alvo ainda não viu, acumula uma média ponderada das notas dos usuários similares. Peso = 1 / (1 + distância) → mais próximo = maior peso. Retorna uma lista ordenada com os filmes recomendados e suas pontuações estimadas.
+- **generateRecommendations**: Principal função que é responsavel por lê os usuários a serem recomendados, onde para cada usuário encontra usuários similares (findSimilarUsers), gera as recomendações (getRecommendations) e exibe elas medindo o tempo de execução de cada recomendação e calcula o tempo médio no final.
 
 ### Similaridade de Cosseno
 
@@ -314,7 +309,7 @@ No seu sistema de recomendação:
 
 ### MinHash + LSH + Multithreading (descontinuado)
 
-Foi testado o uso de MinHash + LSH para otimizar o cálculo de similaridade ao agrupar usuários 80% semelhantes e fornecer uma única recomendação para o conjunto, enquanto para usuários que não se encaixassem nessa métrica receberiam as recomendações individuais. Entretanto, em razão da esparcidade dos dados e da alta dimensionalidade do conjunto, o uso de MinHash + LSH + Multithreading se provou 50% pior que o uso apenas do cosseno (poucos usuários se provavam semelhantes, e o custo do cálculo dessa semelhança não compensava a otimização). Com a diminuição do threshold(porcentagem que define usuários como semelhantes) e aumento das bandas(para provocar mais colisões e, assim, encontrar mais users semelhantes) foi possível encontrar mais usuários semelhantes, em média, mas o tempo de execução piorou. Por essas razões, a combinação de MinHash + LSH + Multithreading se provou muito custosa e foi descontinuada.
+Foi testado o uso de MinHash + LSH para otimizar o cálculo de similaridade ao agrupar usuários 80% semelhantes e fornecer uma única recomendação para o conjunto, enquanto para usuários que não se encaixassem nessa métrica receberiam as recomendações individuais. Entretanto, em razão da esparcidade dos dados e da alta dimensionalidade do conjunto, o uso de MinHash + LSH + Multithreading se provou 50% pior que o uso apenas do cosseno (poucos usuários se provavam semelhantes, e o custo do cálculo dessa semelhança não compensava a otimização). Com a diminuição do threshold (porcentagem que define usuários como semelhantes) e aumento das bandas (para provocar mais colisões e, assim, encontrar mais users semelhantes) foi possível encontrar mais usuários semelhantes, em média, mas o tempo de execução piorou. Por essas razões, a combinação de MinHash + LSH + Multithreading se provou muito custosa e foi descontinuada.
 
 ### Comparativo de Performace de Recomendação
 
@@ -842,7 +837,7 @@ O desenvolvimento e a melhoria do sistema de recomendação de filmes em C++, co
 
 Optar pela similaridade de cosseno como método principal de recomendação reforça a confiabilidade da solução, pois ela oferece resultados consistentes mesmo em situações com muita esparsidade e alta dimensionalidade, como na base MovieLens 25M. Além disso, o uso de estruturas eficientes, como unordered_map, buffers manuais e pré-cálculos de normas, ajudou a reduzir bastante o tempo de processamento, tornando o sistema mais escalável e viável para uso em situações reais.
 
-Os testes que realizamos mostraram que, usando várias threads e processamento simultâneo, conseguimos gerar recomendações para dezenas de usuários em apenas alguns segundos. Isso confirmou que a arquitetura que propusemos é eficiente. O projeto também revelou, com a combinação de algoritmos, estruturas de dados e pequenas otimizações, é possível obter resultados muito bons em C++, mesmo com conjuntos de dados enormes.
+Os testes que realizamos mostraram que, usando várias threads e processamento simultâneo, conseguimos gerar recomendações para dezenas de usuários em apenas alguns segundos. Isso confirmou que a arquitetura que propusemos é eficiente. O projeto também revelou que com a combinação de algoritmos, estruturas de dados e pequenas otimizações, é possível obter resultados muito bons em C++, mesmo com conjuntos de dados enormes.
 
 Esse trabalho abre espaço para futuras melhorias, como a inclusão de métodos híbridos, o uso de modelos de aprendizado de máquina e a adaptação para ambientes distribuídos. Com o desenvolvimento contínuo dessa base, podemos avançar na criação de sistemas de recomendação cada vez mais rápidos, precisos e capazes de atender às necessidades atuais da ciência de dados.
 
