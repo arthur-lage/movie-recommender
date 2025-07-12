@@ -126,6 +126,7 @@ Foram testadas as seguintes estratégias:
 - **Correlação de Pearson**
 - **Jaccard**
 - **Manhattan**
+- **MinHash + LSH + Multithreading**
 
 Abaixo está uma breve descrição sobre esses métodos, e a performance média que obtivemos nos testes.
 
