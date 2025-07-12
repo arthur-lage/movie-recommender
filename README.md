@@ -308,10 +308,6 @@ No seu sistema de recomendação:
 
 <p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
-### MinHash + LSH + Multithreading
-
-Foi testado o uso de MinHash + LSH para otimizar o cálculo de similaridade ao agrupar usuários 80% semelhantes e fornecer uma única recomendação para o conjunto, enquanto para usuários que não se encaixassem nessa métrica receberiam as recomendações individuais. Entretanto, em razão da esparcidade dos dados e da alta dimensionalidade do conjunto, o uso de MinHash + LSH + Multithreading se provou 50% pior que o uso apenas do cosseno (poucos usuários se provavam semelhantes, e o custo do cálculo dessa semelhança não compensava a otimização). Com a diminuição do threshold (porcentagem que define usuários como semelhantes) e aumento das bandas (para provocar mais colisões e, assim, encontrar mais users semelhantes) foi possível encontrar mais usuários semelhantes, em média, mas o tempo de execução piorou. Por essas razões, a combinação de MinHash + LSH + Multithreading se provou muito custosa e foi descontinuada.
-
 ### Comparativo de Performace de Recomendação
 
 Analisando apenas o tempo que o algoritmo gasta, em média, para gerar uma única recomendação (desconsiderando tempos de pré-processamento, outros tipos de tratamento, etc) tem-se:
@@ -345,6 +341,11 @@ Analisando apenas o tempo que o algoritmo gasta, em média, para gerar uma únic
 
 - **Operações sobre conjuntos** (interseção/uniao), menos eficientes.  
 - **Dimensionalidade**: algoritmos como Jaccard sofrem com alta dimensionalidade.  
+
+
+### MinHash + LSH + Multithreading
+
+Foi testado o uso de MinHash + LSH para otimizar o cálculo de similaridade ao agrupar usuários 80% semelhantes e fornecer uma única recomendação para o conjunto, enquanto para usuários que não se encaixassem nessa métrica receberiam as recomendações individuais. Entretanto, em razão da esparcidade dos dados e da alta dimensionalidade do conjunto, o uso de MinHash + LSH + Multithreading se provou 50% pior que o uso apenas do cosseno (poucos usuários se provavam semelhantes, e o custo do cálculo dessa semelhança não compensava a otimização). Com a diminuição do threshold (porcentagem que define usuários como semelhantes) e aumento das bandas (para provocar mais colisões e, assim, encontrar mais users semelhantes) foi possível encontrar mais usuários semelhantes, em média, mas o tempo de execução piorou. Por essas razões, a combinação de MinHash + LSH + Multithreading se provou muito custosa e foi descontinuada.
 
 ### Geração de Recomendações
 
