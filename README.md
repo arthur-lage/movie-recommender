@@ -33,7 +33,7 @@ As instruções mais detalhadas podem ser encontradas na seção <a href="#️-i
     - [Jaccard](#jaccard)
     - [Manhattan](#manhattan)
     - [Cosseno](#similaridade-de-cosseno)
-    - [MinHash + LSH + Multithreading (descontinuado)](#minhash--lsh--multithreading)
+    - [MinHash + LSH + Multithreading](#minhash--lsh--multithreading)
     - [Geração de Recomendações](#geração-de-recomendações)
 - [⏳️ Otimizações](#️-otimizações)
 - [⚙️ Fluxo do Programa](#️-fluxo-do-programa)
@@ -307,7 +307,7 @@ No seu sistema de recomendação:
 
 <p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
-### MinHash + LSH + Multithreading 
+### MinHash + LSH + Multithreading
 
 Foi testado o uso de MinHash + LSH para otimizar o cálculo de similaridade ao agrupar usuários 80% semelhantes e fornecer uma única recomendação para o conjunto, enquanto para usuários que não se encaixassem nessa métrica receberiam as recomendações individuais. Entretanto, em razão da esparcidade dos dados e da alta dimensionalidade do conjunto, o uso de MinHash + LSH + Multithreading se provou 50% pior que o uso apenas do cosseno (poucos usuários se provavam semelhantes, e o custo do cálculo dessa semelhança não compensava a otimização). Com a diminuição do threshold (porcentagem que define usuários como semelhantes) e aumento das bandas (para provocar mais colisões e, assim, encontrar mais users semelhantes) foi possível encontrar mais usuários semelhantes, em média, mas o tempo de execução piorou. Por essas razões, a combinação de MinHash + LSH + Multithreading se provou muito custosa e foi descontinuada.
 
