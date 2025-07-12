@@ -12,7 +12,7 @@
 
 ## ⚠️ IMPORTANTE!
 
-Para rodar o programa, é necessário ter os arquivos `ratings.csv` e `movies.csv` dentro de uma pasta chamada `/kaggle-data`, que fica localizada na raiz do projeto. Devido aos limites de armazenamento do GitHub, esses arquivos devem ser baixados separadamente pelo link abaixo:
+Para rodar o programa, é necessário ter o arquivo `ratings.csv` dentro de uma pasta chamada `/kaggle-data`, que fica localizada na raiz do projeto. Devido aos limites de armazenamento do GitHub, esse arquivo deve ser baixado separadamente pelo link abaixo:
 
 [Base De Dados](https://www.kaggle.com/datasets/garymk/movielens-25m-dataset)
 
@@ -50,11 +50,9 @@ As instruções mais detalhadas podem ser encontradas na seção <a href="#️-i
 
 Esse projeto foi desenvolvido como trabalho final da disciplina de Algoritmos e Estruturas de Dados I, ministrada por Michel Pires, do curso de Engenharia de Computação do CEFET-MG (Campus Divinópolis). O objetivo desse trabalho é gerar recomendações de filmes para usuários específicos com base em um banco de dados público de filmes, que possui mais de 25 milhões de registros, contendo identificadores para os usuários e filmes, suas avaliações e o momento em que o registro foi feito.
 
-Nesse estudo, foi utilizada a base de dados gratuita "MovieLens 25M", que disponibiliza dados das avaliações de mais de 160 mil usuários em mais de 62 mil filmes. Esses dados foram coletados pelo serviço MovieLens entre 1995 e 2019, tendo o conjunto de dados gerado em 21 de novembro de 2019. Os arquivos usados no desenvolvimento dessa aplicação foram: 
+Nesse estudo, foi utilizada a base de dados gratuita "MovieLens 25M", que disponibiliza dados das avaliações de mais de 160 mil usuários em mais de 62 mil filmes. Esses dados foram coletados pelo serviço MovieLens entre 1995 e 2019, tendo o conjunto de dados gerado em 21 de novembro de 2019. O arquivo usado no desenvolvimento dessa aplicação foi: 
 
 - `ratings.csv`: Arquivo que contém as avaliações dos usuários sobre determinado filme, tendo em cada linha o id do usuário, o id do filme, a nota do usuário nesse filme e o momento em que o registro foi feito (timestamp). O timestamp não foi incluido nesse estudo, já que não apresenta relevância na hora de recomendar os filmes para os usuários.
-
-- `movies.csv`: Arquivo que traz informações sobre os filmes, como: id do filme no banco de dados, nome do filme e os gêneros dele.
 
 Dessa maneira, a partir dos dados fornecidos pelo serviço e por meio da similaridade de cossenos, que permite relacionar as avaliações para encontrar usuários semelhantes de forma rápida, foi construido esse algoritmo de recomendação de filmes. Os detalhes de implementação e execução serão detalhados ao longo dessa documentação.
 
@@ -434,7 +432,7 @@ The Godfather (1972) (Score: 4.80)
 ```
 
 * Esse conteúdo é escrito em buffer com `OutputManager.write(...)`.
-* Ao final, todas as threads finalizam, e o buffer é `flush()` no arquivo `outcome/output.txt`.
+* Ao final, todas as threads finalizam, e o buffer é `flush()` no arquivo `outcome/output.dat`.
 
 
 ###  Estruturas usadas
@@ -511,14 +509,6 @@ Esta é uma classe responsável por abrir o arquivo `input.dat`, que foi criado 
 A função `process_input(UsersAndMoviesData&)` lê todas as linhas do arquivo `input.dat` e constrói uma estrutura chamada `UsersAndMoviesData`.  
 Essa estrutura armazena informações sobre todos os usuários e os filmes que eles avaliaram, junto com as notas atribuídas a cada um deles.  
 
-
-### 4. MovieReader  
-Faz a leitura do arquivo `movies.csv`, que contém os títulos dos filmes.  
-
-A função `getMovies(MoviesData&)` mapeia cada identificador de filme (`movie_id`) para o título correspondente.  
-Ela preenche a estrutura `MoviesData` com esses dados, organizando as informações de forma acessível para o restante do programa.  
-
-
 ### 5. Recommender  
 Ela começa lendo o arquivo `datasets/explore.dat`, que contém os IDs dos usuários que irão receber as recomendações.  
 
@@ -526,24 +516,14 @@ Ela começa lendo o arquivo `datasets/explore.dat`, que contém os IDs dos usuá
 - Em seguida, identifica os K usuários mais semelhantes a cada usuário alvo.  
 - Com base nisso, seleciona filmes que o usuário ainda não assistiu, mas que foram bem avaliados pelos usuários semelhantes.  
 - Para cada usuário, gera até cinco recomendações, de acordo com o que está definido no arquivo `config.hpp`.  
-- Por fim, grava todas as recomendações no arquivo `outcome/output.txt`.  
+- Por fim, grava todas as recomendações no arquivo `outcome/output.dat`.  
 
 
-### 6. Arquivo de saída: outcome/output.txt  
+### 6. Arquivo de saída: outcome/output.dat
 O arquivo gerado ao final contém as sugestões personalizadas para cada usuário listado em `datasets/explore.dat`.  
-Cada grupo de recomendações segue este formato:  
+Cada grupo de recomendações segue este formato: 
 
-Recommendations for user <user_id>
-
-<movie_title_1> (Score: <nota>)
-
-<movie_title_2> (Score: <nota>)
-
-<movie_title_3> (Score: <nota>)
-
-<movie_title_4> (Score: <nota>)
-
-<movie_title_5> (Score: <nota>)
+id_usuario filme1 filme2 filme3 ...
 
 <p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
@@ -661,24 +641,21 @@ movie-recommender/
 │   ├── data_preprocessor.hpp  # Pré-processamento de dados
 │   ├── file_handler.hpp       # Manipulação de arquivos
 │   ├── input_processor.hpp    # Processamento de entrada
-│   ├── movie_reader.hpp       # Leitura de dados de filmes
 │   ├── output_manager.hpp     # Gerenciamento de saída
 │   ├── recommender.hpp        # Lógica de recomendação
 │   └── utils.hpp              # Utilitários diversos
 │
 ├── kaggle-data/               # Dados obtidos do Kaggle
-│   ├── movies.csv             # Informações de filmes
 │   └── ratings.csv            # Avaliações de usuários
 │
 ├── outcome/                   # Resultados gerados
-│   └── output.txt             # Arquivo de saída com as recomendações
+│   └── output.dat             # Arquivo de saída com as recomendações
 │
 ├── src/                       # Código fonte (.cpp)
 │   ├── data_preprocessor.cpp  # Implementação do pré-processador
 │   ├── file_handler.cpp       # Implementação do manipulador de arquivos (classe base)
 │   ├── input_processor.cpp    # Implementação do processador dos dados pré-processados
 │   ├── main.cpp               # Ponto de entrada do programa
-│   ├── movie_reader.cpp       # Implementação do leitor de filmes
 │   ├── output_manager.cpp     # Implementação do gerenciador de saída
 │   ├── recommender.cpp        # Implementação do sistema de recomendação
 │   └── utils.cpp              # Implementação de utilitários
@@ -693,9 +670,9 @@ movie-recommender/
 
 O projeto **movie-recommender** é organizado em pastas que separam os diferentes componentes do sistema, facilitando a manutenção e o desenvolvimento. A pasta **datasets/** contém arquivos essenciais para a funcionalidade principal do programa, como `explore.dat`, que descreve quais os usuários que receberão sugestões de filmes, e `input.dat`, que possui os dados filtrados e pré-processados.
 
-Na pasta **include/**, estão os cabeçalhos (.hpp) que definem as estruturas e funções do sistema. O arquivo **config.hpp** guarda configurações globais, enquanto **custom_types.hpp** define tipos de dados personalizados para melhor organização. O pré-processamento de dados é tratado em **data_preprocessor.hpp**, e a classe base dos arquivos que usam arquivos está em **file_handler.hpp**. Já **input_processor.hpp** lida com a leitura e salvamento dos dados pré-processados, **movie_reader.hpp** concentra a leitura de informações sobre filmes, e **output_manager.hpp** controla a geração do arquivo de resultados. A lógica principal de recomendação está em **recommender.hpp**, e utilitários auxiliares são definidos em **utils.hpp**.  
+Na pasta **include/**, estão os cabeçalhos (.hpp) que definem as estruturas e funções do sistema. O arquivo **config.hpp** guarda configurações globais, enquanto **custom_types.hpp** define tipos de dados personalizados para melhor organização. O pré-processamento de dados é tratado em **data_preprocessor.hpp**, e a classe base dos arquivos que usam arquivos está em **file_handler.hpp**. Já **input_processor.hpp** lida com a leitura e salvamento dos dados pré-processados e **output_manager.hpp** controla a geração do arquivo de resultados. A lógica principal de recomendação está em **recommender.hpp**, e utilitários auxiliares são definidos em **utils.hpp**.  
 
-Os dados externos, obtidos do Kaggle, estão em **kaggle-data/**, com **movies.csv** (metadados de filmes) e **ratings.csv** (avaliações de usuários), servindo como base para gerar as sugestões de filme. Os resultados gerados são salvos em **outcome/output.txt**, que contém as recomendações finais.  
+Os dados externos, obtidos do Kaggle, estão em **kaggle-data/**, com o arquivo **ratings.csv** (avaliações de usuários) servindo como base para gerar as sugestões de filme. Os resultados gerados são salvos em **outcome/output.dat**, que contém as recomendações finais.  
 
 A implementação das funcionalidades está na pasta **src/**, com arquivos como **data_preprocessor.cpp** (pré-processamento), **file_handler.cpp** (operações de arquivo), **input_processor.cpp** (processamento de dados pré-processados), e **main.cpp** (ponto de entrada). O coração do sistema, **recommender.cpp**, implementa os algoritmos de recomendação, enquanto **utils.cpp** fornece funções auxiliares.  
 
@@ -760,14 +737,6 @@ Nesse arquivo, está a classe responsável por ler os dados que já foram pré-p
   - Divide o arquivo em partes para serem processadas por diferentes threads.  
   - Preenche o mapa `UsersAndMoviesData` com as avaliações feitas por cada usuário.  
 
-📁 **movie_reader.hpp / movie_reader.cpp**  
-Aqui temos o leitor que busca os nomes dos filmes:  
-
-### Classe MovieReader (que herda de FileHandler)  
-- `getMovies(MoviesData&)`:  
-  - Lê o arquivo `movies.csv`.  
-  - Associa cada ID de filme ao seu título correspondente.  
-
 📁 **output_manager.hpp / output_manager.cpp**  
 É onde ocorre a escrita do resultado final:  
 
@@ -805,10 +774,8 @@ No arquivo `main.cpp`, está o controle principal de como o programa funciona:
 
 Primeiro, ele cria um objeto `DataPreprocessor` e processa o arquivo `ratings.csv`.  
 Depois, cria um `InputProcessor` para carregar o arquivo `input.dat` na estrutura `usersAndMovies`.  
-Em seguida, lê o arquivo `movies.csv` usando o `MovieReader` e preenche a lista de filmes.  
 Após isso, instancia um `Recommender` e chama o método `generateRecommendations` para gerar as recomendações.  
 Por fim, mede quanto tempo cada etapa levou e exibe essas informações no terminal.  
-
 
 <p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>
 
@@ -878,7 +845,7 @@ Dentro do projeto, crie uma pasta chamada "kaggle-data".
 
 Após baixar a [Base De Dados](https://www.kaggle.com/datasets/garymk/movielens-25m-dataset) nesse link, extraia o arquivo baixado.
 
-Selecione os arquivos "movies.csv" e "ratings.csv" e copie-os para a pasta "kaggle-data".
+Selecione o arquivo "ratings.csv" e copie-o para a pasta "kaggle-data".
 
 - 4. Executando o projeto
 
@@ -907,7 +874,7 @@ make all
 O resultado das recomendações serão gerados no caminho: 
 
 ```bash
-outcome/output.txt
+outcome/output.dat
 ```
 
 <p align="right">(<a href="#-sumário">voltar ao topo</a>)</p>

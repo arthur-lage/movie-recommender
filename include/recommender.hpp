@@ -7,8 +7,7 @@
 class Recommender {
 public:
     Recommender();
-    void generateRecommendations(const UsersAndMoviesData& usersAndMovies, 
-                               const MoviesData& movies);
+    void generateRecommendations(const UsersAndMoviesData& usersAndMovies);
     
 private:
     void precomputeUserNorms(const UsersAndMoviesData& data);

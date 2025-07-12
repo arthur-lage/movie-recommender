@@ -3,4 +3,4 @@
 .vscode
 /kaggle-data/*
 /datasets/input.dat
-/outcome/output.txt
+/outcome/output.dat

@@ -62,14 +62,13 @@ double Recommender::computeCosineSimilarity(user_id_t user1, user_id_t user2,
     return (normProduct > 0) ? (dotProduct / normProduct) : 0.0;
 }
 
-void Recommender::generateRecommendations(const UsersAndMoviesData &usersAndMovies,
-                                                const MoviesData &movies)
+void Recommender::generateRecommendations(const UsersAndMoviesData &usersAndMovies)
 {
     OutputManager outputManager;
     std::vector<uint64_t> genDurations;
     std::vector<uint64_t> writeDurations;
 
-    outputManager.openInOutcome("output.txt");
+    outputManager.openInOutcome("output.dat");
     std::ostringstream buffer;
     buffer.str().reserve(10000);
 
@@ -207,15 +206,12 @@ void Recommender::generateRecommendations(const UsersAndMoviesData &usersAndMovi
             }
 
             std::ostringstream buffer;
-            buffer << "\n\nRecommendations for user " << targetUser << ":\n\n";
+            buffer << targetUser << " ";
             for (const auto &[movieId, score] : recommendations)
             {
-                auto it = movies.find(movieId);
-                if (it != movies.end())
-                {
-                    buffer << it->second << " (Score: " << score << ")\n";
-                }
+                buffer << movieId << " ";
             }
+            buffer << "\n";
 
             {
                 std::lock_guard<std::mutex> outputLock(outputMutex);
